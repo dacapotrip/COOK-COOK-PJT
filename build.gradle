@@ -24,7 +24,18 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+	// Spring Security
+    implementation 'org.springframework.boot:spring-boot-starter-security' 
+     // JWT API: JSON Web Token 생성 및 검증을 위한 라이브러리
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    // JWT Implementation: JWT의 구현체
+    implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    // JWT Jackson: JWT를 JSON으로 변환하기 위한 Jackson 지원
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+	// Spring Mail: 이메일 전송 기능을 제공하는 스타터
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
 	compileOnly 'org.projectlombok:lombok'
