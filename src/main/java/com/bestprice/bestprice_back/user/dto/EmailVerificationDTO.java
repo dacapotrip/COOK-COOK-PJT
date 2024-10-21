@@ -1,4 +1,4 @@
-package com.bestprice.bestprice_back.user.domain;
+package com.bestprice.bestprice_back.user.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
