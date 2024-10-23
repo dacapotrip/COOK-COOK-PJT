@@ -36,10 +36,10 @@ public class SecurityConfig {
 				//경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/login", "/", "/register").permitAll()
+                        .requestMatchers("/user/login", "/", "/user/register").permitAll()
 						.requestMatchers("/admin").hasRole("ADMIN")
                         .anyRequest().authenticated());
-
+        
 				//세션 설정 - stateless
         http
                 .sessionManagement((session) -> session

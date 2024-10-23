@@ -1,6 +1,7 @@
 package com.bestprice.bestprice_back.user.service;
 
 import com.bestprice.bestprice_back.user.dao.UserMapper;
+import com.bestprice.bestprice_back.user.domain.User;
 import com.bestprice.bestprice_back.user.dto.UserRegisterDTO;
 
 import lombok.Builder;
@@ -8,6 +9,8 @@ import lombok.Builder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Builder
 @Service
@@ -23,5 +26,13 @@ public class UserService {
         String encodedPassword = passwordEncoder.encode(userRegisterDTO.getPassword());
         userRegisterDTO.setPassword(encodedPassword);
         userMapper.joinUser(userRegisterDTO);
+    }
+
+    public Optional<User> login(String userId, String password) {
+        Optional<User> userOptional = userMapper.findByUserId(userId);
+        if (userOptional.isPresent() && passwordEncoder.matches(password, userOptional.get().getPassword())) {
+            return userOptional;
+        }
+        return Optional.empty();
     }
 }

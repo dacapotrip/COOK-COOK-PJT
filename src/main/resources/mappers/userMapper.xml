@@ -10,4 +10,12 @@
         INSERT INTO user (user_id, password, name, nickname, email, role, verified)
         VALUES (#{userId}, #{password}, #{name}, #{nickname}, #{email}, #{role}, #{verified})
     </insert>
-</mapper>
+
+    <!-- findByUserId --> 
+
+    <select id="findByUserId"
+            parameterType="String" 
+            resultType="com.bestprice.bestprice_back.user.domain.User">
+        SELECT * FROM user WHERE user_id = #{userId}
+    </select>
+    </mapper>
