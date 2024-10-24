@@ -4,6 +4,8 @@ from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 
 app = Flask(__name__)
@@ -24,19 +26,31 @@ def setup_driver():
 
 def search_coupang(keyword):
     driver = setup_driver()
-    url = "https://www.coupang.com/np/search?component=&q=" + keyword
+    url = "https://www.coupang.com/np/search?component=194176&q=" + keyword
     driver.get(url)
 
     try:
-        products = driver.find_elements(By.CLASS_NAME, "search-product:not(search-product__ad-badge)")
+        # WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "search-product")))
+
+        # driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        # time.sleep(2)
+
+        products = driver.find_elements(By.CLASS_NAME, "search-product")
 
         results = []
         for product in products[:10]:  # 상위 10개 제품만 처리
             try:
+
                 item = {}
                 item['productName'] = product.find_element(By.CLASS_NAME, "name").text
-                item['discount'] = product.find_element(By.CLASS_NAME, "instant-discount-rate").text
-                item['basePrice'] = product.find_element(By.CLASS_NAME, "base-price").text
+
+                try:
+                    discount = product.find_element(By.CLASS_NAME, "instant-discount-rate")
+                    item['discount'] = discount.text
+                    item['basePrice'] = product.find_element(By.CLASS_NAME, "base-price").text
+                except Exception :
+                    print(f"할인 없음")
+                
                 item['price'] = product.find_element(By.CLASS_NAME, "price-value").text
 
                 imgsrc = product.find_element(By.TAG_NAME, 'img')
@@ -48,8 +62,8 @@ def search_coupang(keyword):
 
                 results.append(item)
 
-            except NoSuchElementException:
-                continue
+            except Exception as e:
+                print(f"제품 정보 누락: {e}")
         return results
     except TimeoutException:
         print("페이지 로딩 시간이 초과되었습니다.")
