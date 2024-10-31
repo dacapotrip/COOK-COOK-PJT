@@ -4,6 +4,9 @@ import com.bestprice.bestprice_back.user.dao.UserMapper;
 import com.bestprice.bestprice_back.user.domain.User;
 import com.bestprice.bestprice_back.user.dto.EmailVerificationDTO;
 import com.bestprice.bestprice_back.user.dto.UserRegisterDTO;
+
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 import lombok.Builder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -42,24 +45,34 @@ public class UserService {
     }
 
     private void sendVerificationEmail(String email, String token) {
-        try {
-            jakarta.mail.internet.MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true);
-            helper.setTo(email);
-            helper.setSubject("회원가입 이메일 인증");
-            String body = "<div>"
-                    + "<h1> 안녕하세요. Artify 입니다</h1>"
-                    + "<br>"
-                    + "<p>아래 링크를 클릭하면 이메일 인증이 완료됩니다.<p>"
-                    + "<a href='http://localhost:3000/user/verify?token=" + token + "'>인증 링크</a>"
-                    + "</div>";
-            helper.setText(body, true); // true는 HTML 형식
-            helper.setFrom(new jakarta.mail.internet.InternetAddress("bestpriceback@naver.com", "BestPrice_Admin")); // 보내는 사람
-            mailSender.send(message); // 메일 전송
-        } catch (Exception e) {
-            e.printStackTrace(); // 예외 처리
-        }
+    try {
+        // MimeMessage 생성
+        MimeMessage message = mailSender.createMimeMessage();
+        
+        // MimeMessageHelper 사용
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8"); // UTF-8 인코딩 설정
+        helper.setFrom(new InternetAddress("bestpriceback@naver.com", "BestPrice_Admin", "UTF-8")); // 보내는 사람 설정
+        helper.setTo(email); // 수신자 설정
+        helper.setSubject("회원가입 이메일 인증"); // 제목 설정
+        
+        // HTML 내용
+        String body = "<div style='font-family: Arial, sans-serif;'>"
+                + "<h1>안녕하세요. BestPrice 입니다</h1>"
+                + "<br>"
+                + "<p>아래 링크를 클릭하면 이메일 인증이 완료됩니다.</p>"
+                + "<a href='http://localhost:3000/user/verify?token=" + token + "' style='color: blue; text-decoration: underline;'>인증 링크</a>"
+                + "</div>";
+
+        helper.setText(body, true); // true는 HTML 형식 설정
+        
+        // 이메일 전송
+        mailSender.send(message);
+    } catch (Exception e) {
+        e.printStackTrace(); // 예외 발생 시 스택 트레이스를 출력
     }
+}
+
+    
 
     public Optional<User> login(String userId, String password) {
         Optional<User> userOptional = userMapper.findByUserId(userId);
