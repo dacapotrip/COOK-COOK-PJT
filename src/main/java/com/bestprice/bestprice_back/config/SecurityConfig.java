@@ -1,51 +1,48 @@
 package com.bestprice.bestprice_back.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.bestprice.bestprice_back.jwt.JwtTokenFilter;
+import com.bestprice.bestprice_back.user.service.UserService;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
-    @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+    private final UserService userService;
 
+    @Bean
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-    
+
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-    
-        		//csrf disable
-        http
-                .csrf((auth) -> auth.disable());
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+        httpSecurity
+            .csrf(AbstractHttpConfigurer::disable)
+            .sessionManagement(sessionManagement -> 
+                sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            )
+            .authorizeHttpRequests(requests -> {
+                
+                    //requests.requestMatchers("/user/login", "/user/register").permitAll() // 로그인 및 회원가입은 허용
+                    //requests.anyRequest().authenticated(); // 나머지 요청은 인증 필요
+                    requests.anyRequest().permitAll();
+            })
+            .addFilterBefore(new JwtTokenFilter(userService), UsernamePasswordAuthenticationFilter.class);
 
-				//Form 로그인 방식 disable
-        http
-                .formLogin((auth) -> auth.disable());
-
-				//http basic 인증 방식 disable
-        http
-                .httpBasic((auth) -> auth.disable());
-
-				//경로별 인가 작업
-        http
-                .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/user/login", "/", "/user/register").permitAll()
-						.requestMatchers("/admin").hasRole("ADMIN")
-                        .anyRequest().authenticated());
-        
-				//세션 설정 - stateless
-        http
-                .sessionManagement((session) -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-
-        return http.build();
-
+        return httpSecurity.build(); // HttpSecurity 빌드 및 반환
     }
 }

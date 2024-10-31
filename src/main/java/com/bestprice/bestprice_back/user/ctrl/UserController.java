@@ -13,6 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -23,12 +28,18 @@ public class UserController {
     @Autowired
     private JwtTokenUtil jwtTokenUtil; 
 
+    @Operation(summary = "회원가입", description = "사용자를 등록합니다.")
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody UserRegisterDTO userRegisterDTO) {
         userService.register(userRegisterDTO);
         return ResponseEntity.ok("회원가입이 완료되었습니다.");
     }
 
+    @Operation(summary = "로그인", description = "사용자를 로그인합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "로그인 성공"),
+            @ApiResponse(responseCode = "401", description = "로그인 실패")
+    })
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO loginRequestDTO) {
         Optional<User> userOptional = userService.login(loginRequestDTO.getUserId(), loginRequestDTO.getPassword());
