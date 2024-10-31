@@ -13,4 +13,8 @@ public interface UserMapper {
     public void joinUser(UserRegisterDTO params);
 
     Optional<User> findByUserId(String userId);
+
+    Optional<User> findByToken(String token);
+
+    public void updateStateByToken(String token);
 }

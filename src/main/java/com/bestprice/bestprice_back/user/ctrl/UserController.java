@@ -2,21 +2,19 @@ package com.bestprice.bestprice_back.user.ctrl;
 
 import com.bestprice.bestprice_back.jwt.JwtTokenUtil;
 import com.bestprice.bestprice_back.user.domain.User;
+import com.bestprice.bestprice_back.user.dto.EmailVerificationDTO;
 import com.bestprice.bestprice_back.user.dto.LoginRequestDTO;
 import com.bestprice.bestprice_back.user.dto.LoginResponseDTO;
 import com.bestprice.bestprice_back.user.dto.UserRegisterDTO;
 import com.bestprice.bestprice_back.user.service.UserService;
-
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/user")
@@ -32,8 +30,22 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody UserRegisterDTO userRegisterDTO) {
         userService.register(userRegisterDTO);
-        return ResponseEntity.ok("회원가입이 완료되었습니다.");
+        return ResponseEntity.ok("회원가입이 완료되었습니다. 인증 메일을 확인하세요.");
     }
+
+    @Operation(summary = "이메일 인증", description = "이메일 인증을 수행합니다.")
+    @GetMapping("/verify")
+    public ResponseEntity<String> verifyEmail(@RequestParam String email, @RequestParam String token) {
+        EmailVerificationDTO verificationDTO = new EmailVerificationDTO(email, token);
+        Optional<User> userOptional = userService.verifyEmail(verificationDTO);
+        
+        if (userOptional.isPresent()) {
+            return ResponseEntity.ok("이메일 인증이 완료되었습니다.");
+        } else {
+            return ResponseEntity.status(400).body("유효하지 않거나 만료된 인증 링크입니다.");
+        }
+    }
+
 
     @Operation(summary = "로그인", description = "사용자를 로그인합니다.")
     @ApiResponses({

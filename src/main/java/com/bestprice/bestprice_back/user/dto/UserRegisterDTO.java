@@ -17,4 +17,5 @@ public class UserRegisterDTO {
     private String email;        // email
     private String role;         // role
     private boolean verified;     // verified
+    private String token;     // token
 }

@@ -7,8 +7,8 @@
 
     <insert id="joinUser"
             parameterType="com.bestprice.bestprice_back.user.dto.UserRegisterDTO">
-        INSERT INTO user (user_id, password, name, nickname, email, role, verified)
-        VALUES (#{userId}, #{password}, #{name}, #{nickname}, #{email}, #{role}, #{verified})
+        INSERT INTO user (user_id, password, name, nickname, email, role, verified, token)
+        VALUES (#{userId}, #{password}, #{name}, #{nickname}, #{email}, #{role}, #{verified}, #{token})
     </insert>
 
     <!-- findByUserId --> 
@@ -18,4 +18,20 @@
             resultType="com.bestprice.bestprice_back.user.domain.User">
         SELECT * FROM user WHERE user_id = #{userId}
     </select>
+
+
+    <!-- findByToken --> 
+
+    <select id="findByToken"
+            parameterType="String" 
+            resultType="com.bestprice.bestprice_back.user.domain.User">
+        SELECT * FROM user WHERE token = #{token}
+    </select>    
+
+    <!-- updateStateByToken --> 
+
+    <update id="updateStateByToken"
+            parameterType="String">
+        UPDATE user SET verified = 1 WHERE token = #{token}
+    </update>    
     </mapper>
