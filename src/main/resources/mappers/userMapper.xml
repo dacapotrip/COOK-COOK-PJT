@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bestprice.bestprice_back.user.dao.UserMapper">
+
+    <!-- joinUser --> 
+
+    <insert id="joinUser"
+            parameterType="com.bestprice.bestprice_back.user.dto.UserRegisterDTO">
+        INSERT INTO user (user_id, password, name, nickname, email, role, verified, token)
+        VALUES (#{userId}, #{password}, #{name}, #{nickname}, #{email}, #{role}, #{verified}, #{token})
+    </insert>
+
+    <!-- findByUserId --> 
+
+    <select id="findByUserId"
+            parameterType="String" 
+            resultType="com.bestprice.bestprice_back.user.domain.User">
+        SELECT * FROM user WHERE user_id = #{userId}
+    </select>
+
+
+    <!-- findByToken --> 
+
+    <select id="findByToken"
+            parameterType="String" 
+            resultType="com.bestprice.bestprice_back.user.domain.User">
+        SELECT * FROM user WHERE token = #{token}
+    </select>    
+
+    <!-- updateStateByToken --> 
+
+    <update id="updateStateByToken"
+            parameterType="String">
+        UPDATE user SET verified = 1 WHERE token = #{token}
+    </update>    
+    </mapper>
