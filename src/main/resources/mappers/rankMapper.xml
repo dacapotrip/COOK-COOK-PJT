@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bestprice.bestprice_back.rank.mapper.RankMapper">
+
+    <!-- resultMap 정의 -->
+    <resultMap id="RankResultMap" type="com.bestprice.bestprice_back.rank.DTO.RankDTO">
+        <result property="rcpSno" column="RCP_SNO"/>
+        <result property="rcpTtl" column="RCP_TTL"/>
+        <result property="rgtrNm" column="RGTR_NM"/>
+        <result property="inqCnt" column="INQ_CNT"/>
+        <result property="rcmmCnt" column="RCMM_CNT"/>
+        <result property="srapCnt" column="SRAP_CNT"/>
+    </resultMap>
+
+    <!-- 조회수 랭킹 쿼리 -->
+    <select id="getTopInqRank" resultMap="RankResultMap">
+        SELECT RCP_SNO, RCP_TTL, RGTR_NM, INQ_CNT, RCMM_CNT, SRAP_CNT
+        FROM recipe
+        ORDER BY INQ_CNT DESC
+        LIMIT 10
+    </select>
+
+    <!-- 추천수 랭킹 쿼리 -->
+    <select id="getTopRcmmRank" resultMap="RankResultMap">
+        SELECT RCP_SNO, RCP_TTL, RGTR_NM, INQ_CNT, RCMM_CNT, SRAP_CNT
+        FROM recipe
+        ORDER BY RCMM_CNT DESC
+        LIMIT 10
+    </select>
+
+    <!-- 스크랩수 랭킹 쿼리 -->
+    <select id="getTopScrapRank" resultMap="RankResultMap">
+        SELECT RCP_SNO, RCP_TTL, RGTR_NM, INQ_CNT, RCMM_CNT, SRAP_CNT
+        FROM recipe
+        ORDER BY SRAP_CNT DESC
+        LIMIT 10
+    </select>
+
+</mapper>
