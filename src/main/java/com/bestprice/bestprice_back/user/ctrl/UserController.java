@@ -63,9 +63,10 @@ public class UserController {
         String password = loginRequestDTO.getPassword();
 
         // 로그 출력
-        System.out.println("Attempting login for userId: " + userId);
+        System.out.println("Received userId: '" + userId + "'");
+        System.out.println("Received password: '" + password + "'");
 
-        // 유효성 검사: userId와 password가 null이거나 빈 문자열인지 확인
+        // 유효성 검사
         if (userId == null || userId.trim().isEmpty() || password == null || password.trim().isEmpty()) {
             return ResponseEntity.badRequest().body(null); // Bad Request
         }
@@ -73,13 +74,15 @@ public class UserController {
         // 사용자 인증
         Optional<User> userOptional = userService.login(userId, password);
 
-        if (userOptional.isPresent()) {
+        if (userOptional.isPresent() && userOptional.get().getUserId() != null) { // 추가 검증
             String userIdToUse = userOptional.get().getUserId();
+
             // JWT 생성 직전 userId 확인
             System.out.println("Creating JWT for userId: '" + userIdToUse + "' (length: " + userIdToUse.length() + ")");
-            // JWT 생성
-            String accessToken = jwtTokenUtil.createAccessToken(userOptional.get().getUserId(), 3600000); // 1시간
-            String refreshToken = jwtTokenUtil.createRefreshToken(userOptional.get().getUserId(), 86400000); // 24시간
+
+            // JWT 생성 (정적 메서드 호출)
+            String accessToken = JwtTokenUtil.createAccessToken(userIdToUse, 3600000); // 1시간
+            String refreshToken = JwtTokenUtil.createRefreshToken(userIdToUse, 86400000); // 24시간
 
             // 응답 DTO 설정
             LoginResponseDTO response = new LoginResponseDTO();
@@ -90,6 +93,7 @@ public class UserController {
             System.err.println("Login failed for userId: " + userId);
             return ResponseEntity.status(401).body(null); // Unauthorized
         }
+
     }
 
     @Operation(summary = "로그아웃", description = "사용자를 로그아웃합니다.")

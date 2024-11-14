@@ -62,11 +62,22 @@ public class UserService {
 
     public Optional<User> login(String userId, String password) {
         Optional<User> userOptional = userMapper.findByUserId(userId);
-        if (userOptional.isPresent() && passwordEncoder.matches(password, userOptional.get().getPassword())) {
-            return userOptional;
+        
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            System.out.println("Found userId in database: " + user.getUserId()); // userId 값 확인
+    
+            if (passwordEncoder.matches(password, user.getPassword())) {
+                return userOptional;
+            } else {
+                System.err.println("Password mismatch for userId: " + userId);
+            }
+        } else {
+            System.err.println("User not found for userId: " + userId);
         }
         return Optional.empty();
     }
+    
 
     public Optional<User> verifyEmail(EmailVerificationDTO emailVerificationDTO) {
         String email = emailVerificationDTO.getEmail();

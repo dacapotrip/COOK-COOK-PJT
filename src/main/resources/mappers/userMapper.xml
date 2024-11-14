@@ -10,12 +10,18 @@
         VALUES (#{userId}, #{password}, #{name}, #{nickname}, #{email}, #{role}, #{verified}, #{token})
     </insert>
 
-    <!-- findByUserId --> 
     <select id="findByUserId"
-            parameterType="String" 
-            resultType="com.bestprice.bestprice_back.user.domain.User">
+        parameterType="String"
+        resultMap="UserResultMap">
         SELECT * FROM user WHERE user_id = #{userId}
     </select>
+
+    <resultMap id="UserResultMap" type="com.bestprice.bestprice_back.user.domain.User">
+        <result property="userId" column="user_id"/>
+        <result property="password" column="password"/>
+        <!-- 추가적인 필드 매핑이 필요하면 여기에 작성 -->
+    </resultMap>
+
 
     <!-- findByToken --> 
     <select id="findByToken"
