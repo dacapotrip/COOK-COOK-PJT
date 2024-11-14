@@ -13,19 +13,35 @@ import java.util.Map;
 @Component
 public class JwtTokenUtil {
 
-    private static final String SECRET_KEY = "66033f8ac5b9e47867e6bbda4c8757ac483106a0741bf9baed903fd39c1e850e"; // 실제 환경에서는 환경 변수 등에서 가져오는 것이 좋습니다.
+    private static final String SECRET_KEY = "66033f8ac5b9e47867e6bbda4c8757ac483106a0741bf9baed903fd39c1e850e"; // 실제
+                                                                                                                 // 환경에서는
+                                                                                                                 // 환경
+                                                                                                                 // 변수
+                                                                                                                 // 등에서
+                                                                                                                 // 가져오는
+                                                                                                                 // 것이
+                                                                                                                 // 좋습니다.
     private static final SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
     private static final String ACCESS_TOKEN_TYPE = "access";
     private static final String REFRESH_TOKEN_TYPE = "refresh";
 
     // Access Token 발급
     public static String createAccessToken(String userId, long expireTimeMs) {
+        validateUserId(userId); // userId 유효성 검사
         return createToken(userId, expireTimeMs, ACCESS_TOKEN_TYPE);
     }
 
     // Refresh Token 발급
     public static String createRefreshToken(String userId, long expireTimeMs) {
+        validateUserId(userId); // userId 유효성 검사
         return createToken(userId, expireTimeMs, REFRESH_TOKEN_TYPE);
+    }
+
+    // userId 유효성 검사 메서드 추가
+    private static void validateUserId(String userId) {
+        if (userId == null || userId.trim().isEmpty()) {
+            throw new IllegalArgumentException("userId cannot be null or empty");
+        }
     }
 
     // Token 발급

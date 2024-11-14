@@ -59,19 +59,35 @@ public class UserController {
     })
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@Valid @RequestBody LoginRequestDTO loginRequestDTO) {
+        String userId = loginRequestDTO.getUserId();
+        String password = loginRequestDTO.getPassword();
 
-        Optional<User> userOptional = userService.login(loginRequestDTO.getUserId(), loginRequestDTO.getPassword());
+        // 로그 출력
+        System.out.println("Attempting login for userId: " + userId);
+
+        // 유효성 검사: userId와 password가 null이거나 빈 문자열인지 확인
+        if (userId == null || userId.trim().isEmpty() || password == null || password.trim().isEmpty()) {
+            return ResponseEntity.badRequest().body(null); // Bad Request
+        }
+
+        // 사용자 인증
+        Optional<User> userOptional = userService.login(userId, password);
 
         if (userOptional.isPresent()) {
+            String userIdToUse = userOptional.get().getUserId();
+            // JWT 생성 직전 userId 확인
+            System.out.println("Creating JWT for userId: '" + userIdToUse + "' (length: " + userIdToUse.length() + ")");
+            // JWT 생성
             String accessToken = jwtTokenUtil.createAccessToken(userOptional.get().getUserId(), 3600000); // 1시간
             String refreshToken = jwtTokenUtil.createRefreshToken(userOptional.get().getUserId(), 86400000); // 24시간
 
+            // 응답 DTO 설정
             LoginResponseDTO response = new LoginResponseDTO();
             response.setAccessToken(accessToken);
             response.setRefreshToken(refreshToken);
             return ResponseEntity.ok(response);
         } else {
-            System.err.println("Login failed for userId: " + loginRequestDTO.getUserId());
+            System.err.println("Login failed for userId: " + userId);
             return ResponseEntity.status(401).body(null); // Unauthorized
         }
     }
