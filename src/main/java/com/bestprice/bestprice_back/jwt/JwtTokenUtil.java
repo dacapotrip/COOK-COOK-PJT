@@ -13,14 +13,7 @@ import java.util.Map;
 @Component
 public class JwtTokenUtil {
 
-    private static final String SECRET_KEY = "66033f8ac5b9e47867e6bbda4c8757ac483106a0741bf9baed903fd39c1e850e"; // 실제
-                                                                                                                 // 환경에서는
-                                                                                                                 // 환경
-                                                                                                                 // 변수
-                                                                                                                 // 등에서
-                                                                                                                 // 가져오는
-                                                                                                                 // 것이
-                                                                                                                 // 좋습니다.
+    private static final String SECRET_KEY = "66033f8ac5b9e47867e6bbda4c8757ac483106a0741bf9baed903fd39c1e850e";
     private static final SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
     private static final String ACCESS_TOKEN_TYPE = "access";
     private static final String REFRESH_TOKEN_TYPE = "refresh";
@@ -28,13 +21,13 @@ public class JwtTokenUtil {
     // Access Token 발급
     public static String createAccessToken(String userId, long expireTimeMs) {
         validateUserId(userId); // userId 유효성 검사
-        return createToken(userId, expireTimeMs, ACCESS_TOKEN_TYPE);
+        return createToken(userId.trim(), expireTimeMs, ACCESS_TOKEN_TYPE); // 공백 제거
     }
 
     // Refresh Token 발급
     public static String createRefreshToken(String userId, long expireTimeMs) {
         validateUserId(userId); // userId 유효성 검사
-        return createToken(userId, expireTimeMs, REFRESH_TOKEN_TYPE);
+        return createToken(userId.trim(), expireTimeMs, REFRESH_TOKEN_TYPE); // 공백 제거
     }
 
     // userId 유효성 검사 메서드 추가
@@ -44,7 +37,7 @@ public class JwtTokenUtil {
         }
     }
 
-    // Token 발급
+    // JWT 토큰 생성 시 인코딩 방식 확인
     private static String createToken(String userId, long expireTimeMs, String tokenType) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("userId", userId); // userId 추가
@@ -58,29 +51,38 @@ public class JwtTokenUtil {
                 .compact();
     }
 
-    // Claims에서 userId 꺼내기
+    // 토큰 파싱 시 세그먼트 분리 및 확인
     public static String getUserId(String token) {
-        return extractClaims(token).get("userId", String.class);
+        System.out.println("Received token for parsing: " + token.trim()); // 공백 제거 후 출력
+        // JWT 세그먼트 확인
+        String[] parts = token.trim().split("\\."); // 공백 제거 후 분리
+        if (parts.length != 3) {
+            throw new TokenValidationException("Invalid JWT structure. Expected 3 segments.");
+        }
+        System.out.println("Header: " + parts[0]);
+        System.out.println("Payload: " + parts[1]);
+        System.out.println("Signature: " + parts[2]);
+
+        return extractClaims(token.trim()).get("userId", String.class); // 공백 제거 후 파싱
     }
 
     // 토큰 만료 여부 확인
     public static boolean isExpired(String token) {
-        Date expiration = extractClaims(token).getExpiration();
-        return expiration.before(new Date());
+        return extractClaims(token.trim()).getExpiration().before(new Date());
     }
 
     // 토큰이 Access Token인지 확인
     public static boolean isAccessToken(String token) {
-        return ACCESS_TOKEN_TYPE.equals(extractClaims(token).get("tokenType", String.class));
+        return ACCESS_TOKEN_TYPE.equals(extractClaims(token.trim()).get("tokenType", String.class));
     }
 
     // Refresh Token 유효성 검증
     public static boolean validateRefreshToken(String token) {
         try {
-            Claims claims = extractClaims(token);
+            Claims claims = extractClaims(token.trim());
             String tokenType = claims.get("tokenType", String.class);
 
-            if (isExpired(token)) {
+            if (isExpired(token.trim())) {
                 return false; // 시간 만료 시 실패 반환
             }
             return REFRESH_TOKEN_TYPE.equals(tokenType); // 만료되지 않고 리프레시 토큰일 경우 true 반환
@@ -95,7 +97,7 @@ public class JwtTokenUtil {
             return Jwts.parserBuilder()
                     .setSigningKey(key)
                     .build()
-                    .parseClaimsJws(token)
+                    .parseClaimsJws(token.trim()) // 공백 제거 후 파싱
                     .getBody();
         } catch (ExpiredJwtException e) {
             throw new TokenValidationException("Token expired");
@@ -109,5 +111,4 @@ public class JwtTokenUtil {
             super(message);
         }
     }
-
 }
