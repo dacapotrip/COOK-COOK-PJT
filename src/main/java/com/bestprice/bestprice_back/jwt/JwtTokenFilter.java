@@ -26,42 +26,51 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     private final UserService userService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal (HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         System.out.println("Authorization Header: " + authorizationHeader); // 헤더 출력
-    
+
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
-    
-        // "Bearer " 접두사 제거 후 공백 제거
-        String token = authorizationHeader.substring(7).trim(); // 공백 제거
-        System.out.println("Extracted token = " + token);
-    
+
+        String token = authorizationHeader.split(" ")[1];
+        System.out.println("token = " + token);
+
+        // 토큰이 Access Token인지 확인
         try {
-            // JWT 검증
-            if (!JwtTokenUtil.isAccessToken(token) || JwtTokenUtil.isExpired(token)) {
+            if (!JwtTokenUtil.isAccessToken(token)) {
                 filterChain.doFilter(request, response);
                 return;
             }
-    
-            String userId = JwtTokenUtil.getUserId(token);
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                    userId, null, List.of(new SimpleGrantedAuthority("USER"))
-            );
-            authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-    
-            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-            filterChain.doFilter(request, response);
-    
         } catch (JwtTokenUtil.TokenValidationException e) {
             errorResponse(response);
+            return;
         }
+
+        try {
+            if (JwtTokenUtil.isExpired(token)) {
+                throw new JwtTokenUtil.TokenValidationException("Token expired");
+            }
+        } catch (JwtTokenUtil.TokenValidationException e) {
+            errorResponse(response);
+            return;
+        }
+
+
+        // Access Token인 경우 처리
+        Long userId = Long.parseLong(JwtTokenUtil.getUserId(token));
+
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                userId, null, List.of(new SimpleGrantedAuthority("USER"))
+        );
+        authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+        filterChain.doFilter(request, response);
+
     }
-    
-    
-    
 
     //토큰 자체에 문제가 있을때 리턴
     private void errorResponse(HttpServletResponse response) throws IOException {
