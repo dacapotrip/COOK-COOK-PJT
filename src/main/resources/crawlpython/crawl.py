@@ -60,6 +60,8 @@ def search_coupang(keyword):
                 item['link'] = ahref.get_attribute('href')
                 item['productId'] = ahref.get_attribute('data-product-id')
 
+                item['category'] = driver.find_element(By.CLASS_NAME, 'select--category--option__focused').text
+
                 results.append(item)
 
             except Exception as e:
@@ -72,7 +74,7 @@ def search_coupang(keyword):
         print(f"크롤링 중 오류가 발생했습니다: {str(e)}")
         return []
     finally:
-        driver.quit()
+        driver.quit()       
 
 @app.route('/search', methods=['GET'])
 def search():
@@ -86,6 +88,6 @@ def search():
         return jsonify(results)
     else:
         return jsonify({"message": "검색 결과를 가져오는 데 실패했습니다."}), 500
-
+    
 if __name__ == "__main__":
     app.run(debug=True)

@@ -11,4 +11,5 @@ public class ProductDto {
     private String productId;
     private String discount;
     private String basePrice;
+    private String category;
 }

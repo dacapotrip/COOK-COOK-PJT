@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bestprice.bestprice_back.dao.SearchMapper">
+
+    <!-- searchResultRow --> 
+
+    <insert id="searchResultRow" parameterType="com.bestprice.bestprice_back.components.domain.ShopSearchDto">
+        INSERT INTO products (product_id, base_price, price, link, product_name, description, img_url, category, sub_category, discount, recipe_id)
+        VALUES
+        <foreach collection="params" item="item" separator=",">
+            (#{item.productId}, #{item.basePrice}, #{item.price}, #{item.link}, #{item.productName}, #{item.description}, #{item.imgUrl}, #{item.category}, #{item.subCategory}, #{item.discount}, #{item.recipeId})
+        </foreach>
+    </insert>
+
+
+</mapper>

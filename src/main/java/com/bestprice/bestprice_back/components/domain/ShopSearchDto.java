@@ -27,5 +27,4 @@ public class ShopSearchDto {
 
     private String recipeId;       //레시피 id
 
-
 }

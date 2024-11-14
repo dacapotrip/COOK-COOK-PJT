@@ -18,7 +18,7 @@ import com.zaxxer.hikari.HikariDataSource ;
 
 @Configuration
 @PropertySource("classpath:/application.properties") 
-@MapperScan("kdt.fullstack.project.dao")
+@MapperScan("com.bestprice.bestprice_back.dao")
 public class DatabaseConfig {
 
     @Autowired

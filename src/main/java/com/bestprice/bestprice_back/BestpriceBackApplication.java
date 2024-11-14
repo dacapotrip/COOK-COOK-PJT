@@ -8,13 +8,21 @@ import java.net.URL;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+/*
+    api 및 크롤링 전에 데이터 베이스 먼저 확인
+
+    데이터 삽입전에 중복 확인
+
+    db 저장할때 기본키 설정 현재 기본키 없음
+ */
+
 @SpringBootApplication
 public class BestpriceBackApplication {
 
-	public static void main(String[] args) throws URISyntaxException {
-		SpringApplication.run(BestpriceBackApplication.class, args);
+    public static void main(String[] args) throws URISyntaxException {
+        SpringApplication.run(BestpriceBackApplication.class, args);
 
-		try {
+        try {
             // Python 스크립트의 경로를 클래스패스에서 찾기
             URL scriptUrl = BestpriceBackApplication.class.getResource("/crawlpython/crawl.py");
             if (scriptUrl == null) {
@@ -26,7 +34,7 @@ public class BestpriceBackApplication {
 
             ProcessBuilder pythonBuilder = new ProcessBuilder("python", scriptFile.getAbsolutePath());
             pythonBuilder.inheritIO();
-            
+
             // 파이썬 서버 시작
             Process pythonProcess = pythonBuilder.start();
             // 프로세스가 종료될 때까지 대기
@@ -34,6 +42,6 @@ public class BestpriceBackApplication {
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
-	}
+    }
 
 }
