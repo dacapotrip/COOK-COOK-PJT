@@ -10,16 +10,16 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
-import com.bestprice.bestprice_back.components.domain.RecipeDto;
+import com.bestprice.bestprice_back.components.domain.RecipeDetailDto;
 
 @Service
 public class WebCrawlerService {
 
-    public RecipeDto crawl(String query) {
-        List<RecipeDto> recipes = new ArrayList<>(); // 리스트 초기화
+    public RecipeDetailDto crawl(String query) {
+        List<RecipeDetailDto> recipes = new ArrayList<>(); // 리스트 초기화
         String url = "https://www.10000recipe.com/recipe/" + query;
         System.out.println(url);
-        RecipeDto recipeDto = new RecipeDto();
+        RecipeDetailDto recipeDto = new RecipeDetailDto();
 
         try {
             // URL에서 HTML 문서 가져오기
@@ -45,7 +45,7 @@ public class WebCrawlerService {
                         String stepsText = result.text();
                         String stepsImg = images.size() > i ? images.get(i).attr("src") : ""; // 이미지 URL
 
-                        RecipeDto.StepsDTO stepsDTO = recipeDto.new StepsDTO(); // 내부 클래스 인스턴스 생성
+                        RecipeDetailDto.StepsDTO stepsDTO = recipeDto.new StepsDTO(); // 내부 클래스 인스턴스 생성
                         stepsDTO.setStepText(stepsText); // 단계 텍스트 설정
                         stepsDTO.setStepsImg(stepsImg); // 단계 이미지 설정
 

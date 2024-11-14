@@ -12,4 +12,6 @@ public interface SearchMapper {
 
     public void searchResultRow(@Param("params") List<ShopSearchDto> params);
 
+    public List<ShopSearchDto> existChk(String query);
+
 }
