@@ -13,7 +13,7 @@ import java.util.Map;
 @Component
 public class JwtTokenUtil {
 
-    private static final String SECRET_KEY = "여기에는안전한비밀키를넣어주세요비밀키는적어도256비트여야합니다"; // 실제 환경에서는 환경 변수 등에서 가져오는 것이 좋습니다.
+    private static final String SECRET_KEY = "66033f8ac5b9e47867e6bbda4c8757ac483106a0741bf9baed903fd39c1e850e"; // 실제 환경에서는 환경 변수 등에서 가져오는 것이 좋습니다.
     private static final SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
     private static final String ACCESS_TOKEN_TYPE = "access";
     private static final String REFRESH_TOKEN_TYPE = "refresh";
@@ -31,7 +31,7 @@ public class JwtTokenUtil {
     // Token 발급
     private static String createToken(String userId, long expireTimeMs, String tokenType) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("userId", userId);
+        claims.put("userId", userId); // userId 추가
         claims.put("tokenType", tokenType);
 
         return Jwts.builder()
@@ -67,7 +67,7 @@ public class JwtTokenUtil {
             if (isExpired(token)) {
                 return false; // 시간 만료 시 실패 반환
             }
-            return REFRESH_TOKEN_TYPE.equals(tokenType); // 만료되지 않고 리프레시 토큰일 경우 true 반환 
+            return REFRESH_TOKEN_TYPE.equals(tokenType); // 만료되지 않고 리프레시 토큰일 경우 true 반환
         } catch (TokenValidationException e) {
             return false;
         }
@@ -93,4 +93,5 @@ public class JwtTokenUtil {
             super(message);
         }
     }
+
 }

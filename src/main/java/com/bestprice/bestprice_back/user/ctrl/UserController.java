@@ -7,12 +7,13 @@ import com.bestprice.bestprice_back.user.dto.LoginRequestDTO;
 import com.bestprice.bestprice_back.user.dto.LoginResponseDTO;
 import com.bestprice.bestprice_back.user.dto.UserRegisterDTO;
 import com.bestprice.bestprice_back.user.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
@@ -24,28 +25,32 @@ public class UserController {
     private UserService userService;
 
     @Autowired
-    private JwtTokenUtil jwtTokenUtil; 
+    private JwtTokenUtil jwtTokenUtil;
 
     @Operation(summary = "회원가입", description = "사용자를 등록합니다.")
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody UserRegisterDTO userRegisterDTO) {
+    @ApiResponse(responseCode = "201", description = "회원가입 성공")
+    public ResponseEntity<String> register(@Valid @RequestBody UserRegisterDTO userRegisterDTO) {
         userService.register(userRegisterDTO);
-        return ResponseEntity.ok("회원가입이 완료되었습니다. 인증 메일을 확인하세요.");
+        return ResponseEntity.status(201).body("회원가입이 완료되었습니다. 인증 메일을 확인하세요.");
     }
 
     @Operation(summary = "이메일 인증", description = "이메일 인증을 수행합니다.")
     @GetMapping("/verify")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "이메일 인증 성공"),
+            @ApiResponse(responseCode = "400", description = "유효하지 않거나 만료된 인증 링크입니다.")
+    })
     public ResponseEntity<String> verifyEmail(@RequestParam String email, @RequestParam String token) {
         EmailVerificationDTO verificationDTO = new EmailVerificationDTO(email, token);
         Optional<User> userOptional = userService.verifyEmail(verificationDTO);
-        
+
         if (userOptional.isPresent()) {
             return ResponseEntity.ok("이메일 인증이 완료되었습니다.");
         } else {
-            return ResponseEntity.status(400).body("유효하지 않거나 만료된 인증 링크입니다.");
+            return ResponseEntity.badRequest().body("유효하지 않거나 만료된 인증 링크입니다.");
         }
     }
-
 
     @Operation(summary = "로그인", description = "사용자를 로그인합니다.")
     @ApiResponses({
@@ -53,21 +58,74 @@ public class UserController {
             @ApiResponse(responseCode = "401", description = "로그인 실패")
     })
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO loginRequestDTO) {
+    public ResponseEntity<LoginResponseDTO> login(@Valid @RequestBody LoginRequestDTO loginRequestDTO) {
+
         Optional<User> userOptional = userService.login(loginRequestDTO.getUserId(), loginRequestDTO.getPassword());
 
         if (userOptional.isPresent()) {
-            // JWT 생성
             String accessToken = jwtTokenUtil.createAccessToken(userOptional.get().getUserId(), 3600000); // 1시간
             String refreshToken = jwtTokenUtil.createRefreshToken(userOptional.get().getUserId(), 86400000); // 24시간
 
-            // 로그인 응답 반환
             LoginResponseDTO response = new LoginResponseDTO();
             response.setAccessToken(accessToken);
             response.setRefreshToken(refreshToken);
             return ResponseEntity.ok(response);
         } else {
+            System.err.println("Login failed for userId: " + loginRequestDTO.getUserId());
             return ResponseEntity.status(401).body(null); // Unauthorized
         }
+    }
+
+    @Operation(summary = "로그아웃", description = "사용자를 로그아웃합니다.")
+    @PostMapping("/logout")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "로그아웃 성공"),
+            @ApiResponse(responseCode = "400", description = "로그아웃 실패")
+    })
+    public ResponseEntity<String> logout(@RequestHeader("Authorization") String token) {
+        // JWT에서 사용자 ID 추출
+        String userIdString = JwtTokenUtil.getUserId(token); // userId는 String 타입입니다.
+
+        if (userIdString != null) {
+            Long userId = Long.parseLong(userIdString); // String을 Long으로 파싱
+            userService.logout(userId); // Long 타입으로 로그아웃 처리
+            return ResponseEntity.ok("로그아웃이 완료되었습니다.");
+        } else {
+            return ResponseEntity.badRequest().body("로그아웃 실패: 유효하지 않은 사용자입니다.");
+        }
+    }
+
+    @Operation(summary = "비밀번호 초기화 요청", description = "비밀번호 변경 메일을 보냅니다.")
+    @PostMapping("/password/reset")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "메일 전송 성공"),
+            @ApiResponse(responseCode = "400", description = "가입 이력이 없거나 유효하지 않은 이메일")
+    })
+    public ResponseEntity<String> passwordReset(@Valid @RequestBody UserRegisterDTO userRegisterDTO) {
+        String email = userRegisterDTO.getEmail();
+        userService.passwordResetRequest(email);
+        return ResponseEntity.status(201).body(email + " 메일함을 확인하여 비밀번호 초기화 진행해주세요.");
+    }
+
+    @Operation(summary = "새 비밀번호로 변경", description = "새 비밀번호를 설정합니다.")
+    @PostMapping("/password/change")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "비밀번호 변경 완료"),
+            @ApiResponse(responseCode = "400", description = "유효하지 않은 요청")
+    })
+    public ResponseEntity<String> changePassword(@Valid @RequestBody UserRegisterDTO userRegisterDTO) {
+        userService.changePassword(userRegisterDTO);
+        return ResponseEntity.ok("비밀번호가 변경되었습니다.");
+    }
+
+    @Operation(summary = "회원 탈퇴 요청", description = "회원 탈퇴를 요청합니다.")
+    @DeleteMapping
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "회원 탈퇴 성공"),
+            @ApiResponse(responseCode = "400", description = "비밀번호 불일치 시")
+    })
+    public ResponseEntity<String> deleteUser(@Valid @RequestBody UserRegisterDTO userRegisterDTO) {
+        userService.deleteUser(userRegisterDTO.getUserId(), userRegisterDTO.getPassword());
+        return ResponseEntity.ok("회원 탈퇴가 완료되었습니다.");
     }
 }
