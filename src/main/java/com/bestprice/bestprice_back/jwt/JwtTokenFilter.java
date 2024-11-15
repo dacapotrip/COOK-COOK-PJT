@@ -1,5 +1,6 @@
 package com.bestprice.bestprice_back.jwt;
 
+import com.bestprice.bestprice_back.user.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,8 +21,11 @@ import java.util.List;
 @Component
 public class JwtTokenFilter extends OncePerRequestFilter {
 
+    private final UserService userService;
+
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
         String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
@@ -40,31 +44,34 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 return;
             }
         } catch (JwtTokenUtil.TokenValidationException e) {
-            errorResponse(response);
+            errorResponse(response, "Invalid token format: not an access token");
             return;
         }
 
+        // 토큰 만료 여부 확인
         try {
             if (JwtTokenUtil.isExpired(token)) {
                 throw new JwtTokenUtil.TokenValidationException("Token expired");
             }
         } catch (JwtTokenUtil.TokenValidationException e) {
-            errorResponse(response);
+            errorResponse(response, e.getMessage());
             return;
         }
 
         // Access Token인 경우 처리
-        Long memberId;
+        String userId;
         try {
-            memberId = Long.parseLong(JwtTokenUtil.getUserId(token.trim())); // 공백 제거 후 파싱
-        } catch (NumberFormatException e) {
-            errorResponse(response);
+            userId = JwtTokenUtil.getUserId(token.trim()); // 공백 제거 후 파싱
+            if (userId == null || userId.isEmpty()) {
+                throw new JwtTokenUtil.TokenValidationException("Invalid token format: userId is empty");
+            }
+        } catch (JwtTokenUtil.TokenValidationException e) {
+            errorResponse(response, e.getMessage());
             return;
         }
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                memberId, null, List.of(new SimpleGrantedAuthority("USER"))
-        );
+                userId, null, List.of(new SimpleGrantedAuthority("USER")));
         authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
@@ -72,10 +79,10 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     }
 
     // 토큰 자체에 문제가 있을 때 리턴
-    private void errorResponse(HttpServletResponse response) throws IOException {
+    private void errorResponse(HttpServletResponse response, String message) throws IOException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401 상태 코드 설정
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.getWriter().write("{\"message\": \"" + "로그인 정보에 문제가 있습니다. 다시 로그인 해주세요." + "\"}");
+        response.getWriter().write("{\"message\": \"" + message + "\"}");
     }
 }
