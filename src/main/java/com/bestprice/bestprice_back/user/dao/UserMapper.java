@@ -25,7 +25,7 @@ public interface UserMapper {
 
     void updatePassword(@Param("userId") String userId, @Param("password") String password); // 비밀번호 업데이트
 
-    void clearResetToken(Long userId); // 비밀번호 변경 후 토큰 초기화
+    void clearResetToken(String userId); // 비밀번호 변경 후 토큰 초기화
     
     void deleteUser(String userId); // 사용자 삭제
 

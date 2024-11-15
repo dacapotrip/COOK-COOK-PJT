@@ -57,7 +57,7 @@
 
     <!-- clearResetToken --> 
     <update id="clearResetToken"
-            parameterType="Long">
+            parameterType="String">
         UPDATE user SET token = NULL WHERE user_id = #{userId}
     </update>
 

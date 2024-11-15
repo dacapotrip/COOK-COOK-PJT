@@ -102,16 +102,29 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "로그아웃 성공"),
             @ApiResponse(responseCode = "400", description = "로그아웃 실패")
     })
-    public ResponseEntity<String> logout(@RequestHeader("Authorization") String token) {
-        // JWT에서 사용자 ID 추출
-        String userIdString = JwtTokenUtil.getUserId(token); // userId는 String 타입입니다.
+    public ResponseEntity<String> logout(@RequestHeader("Authorization") String authorizationHeader) {
+        // Authorization 헤더 상태 로깅
+        System.out.println("Received Authorization header: '" + authorizationHeader + "'");
 
-        if (userIdString != null) {
-            Long userId = Long.parseLong(userIdString); // String을 Long으로 파싱
-            userService.logout(userId); // Long 타입으로 로그아웃 처리
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            return ResponseEntity.badRequest().body("로그아웃 실패: 유효하지 않은 Authorization 헤더입니다.");
+        }
+
+        // "Bearer " 접두사를 제거하고 공백 제거
+        String token = authorizationHeader.substring(7).trim();
+        System.out.println("Extracted token for logout: '" + token + "'");
+
+        try {
+            // JWT에서 사용자 ID 추출
+            String userId = JwtTokenUtil.getUserId(token);
+            System.out.println("Extracted userId for logout: '" + userId + "'");
+
+            // userService.logout에서 String 타입 userId 처리
+            userService.logout(userId);
             return ResponseEntity.ok("로그아웃이 완료되었습니다.");
-        } else {
-            return ResponseEntity.badRequest().body("로그아웃 실패: 유효하지 않은 사용자입니다.");
+        } catch (JwtTokenUtil.TokenValidationException e) {
+            System.err.println("Token validation failed during logout: " + e.getMessage());
+            return ResponseEntity.badRequest().body("로그아웃 실패: " + e.getMessage());
         }
     }
 

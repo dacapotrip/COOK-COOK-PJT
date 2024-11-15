@@ -95,7 +95,7 @@ public class UserService {
     }
 
     @Transactional
-    public void logout(Long userId) {
+    public void logout(String userId) {
         // 로그아웃 시 리프레시 토큰 삭제
         userMapper.clearResetToken(userId); // 리프레시 토큰을 NULL로 설정
     }

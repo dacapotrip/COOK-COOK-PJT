@@ -18,29 +18,25 @@ public class JwtTokenUtil {
     private static final String ACCESS_TOKEN_TYPE = "access";
     private static final String REFRESH_TOKEN_TYPE = "refresh";
 
-    // Access Token 발급
     public static String createAccessToken(String userId, long expireTimeMs) {
-        validateUserId(userId); // userId 유효성 검사
-        return createToken(userId.trim(), expireTimeMs, ACCESS_TOKEN_TYPE); // 공백 제거
+        validateUserId(userId);
+        return createToken(userId.trim(), expireTimeMs, ACCESS_TOKEN_TYPE);
     }
 
-    // Refresh Token 발급
     public static String createRefreshToken(String userId, long expireTimeMs) {
-        validateUserId(userId); // userId 유효성 검사
-        return createToken(userId.trim(), expireTimeMs, REFRESH_TOKEN_TYPE); // 공백 제거
+        validateUserId(userId);
+        return createToken(userId.trim(), expireTimeMs, REFRESH_TOKEN_TYPE);
     }
 
-    // userId 유효성 검사 메서드 추가
     private static void validateUserId(String userId) {
         if (userId == null || userId.trim().isEmpty()) {
             throw new IllegalArgumentException("userId cannot be null or empty");
         }
     }
 
-    // JWT 토큰 생성 시 인코딩 방식 확인
     private static String createToken(String userId, long expireTimeMs, String tokenType) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("userId", userId); // userId 추가
+        claims.put("userId", userId);
         claims.put("tokenType", tokenType);
 
         return Jwts.builder()
@@ -51,53 +47,45 @@ public class JwtTokenUtil {
                 .compact();
     }
 
-    // 토큰 파싱 시 세그먼트 분리 및 확인
     public static String getUserId(String token) {
-        System.out.println("Received token for parsing: " + token.trim()); // 공백 제거 후 출력
-        // JWT 세그먼트 확인
-        String[] parts = token.trim().split("\\."); // 공백 제거 후 분리
+        if (token == null || token.isEmpty() || token.contains(" ")) {
+            System.out.println("Invalid JWT format: '" + token + "'");
+            throw new TokenValidationException("Invalid JWT format. Unexpected spaces or empty token found.");
+        }
+
+        String[] parts = token.split("\\.");
         if (parts.length != 3) {
+            System.out.println("Invalid JWT structure. Token: " + token);
             throw new TokenValidationException("Invalid JWT structure. Expected 3 segments.");
         }
-        System.out.println("Header: " + parts[0]);
-        System.out.println("Payload: " + parts[1]);
-        System.out.println("Signature: " + parts[2]);
 
-        return extractClaims(token.trim()).get("userId", String.class); // 공백 제거 후 파싱
+        System.out.println("Parsing JWT token, userId extraction phase...");
+        return extractClaims(token).get("userId", String.class);
     }
 
-    // 토큰 만료 여부 확인
     public static boolean isExpired(String token) {
-        return extractClaims(token.trim()).getExpiration().before(new Date());
+        return extractClaims(token).getExpiration().before(new Date());
     }
 
-    // 토큰이 Access Token인지 확인
     public static boolean isAccessToken(String token) {
-        return ACCESS_TOKEN_TYPE.equals(extractClaims(token.trim()).get("tokenType", String.class));
+        return ACCESS_TOKEN_TYPE.equals(extractClaims(token).get("tokenType", String.class));
     }
 
-    // Refresh Token 유효성 검증
     public static boolean validateRefreshToken(String token) {
         try {
-            Claims claims = extractClaims(token.trim());
-            String tokenType = claims.get("tokenType", String.class);
-
-            if (isExpired(token.trim())) {
-                return false; // 시간 만료 시 실패 반환
-            }
-            return REFRESH_TOKEN_TYPE.equals(tokenType); // 만료되지 않고 리프레시 토큰일 경우 true 반환
+            Claims claims = extractClaims(token);
+            return REFRESH_TOKEN_TYPE.equals(claims.get("tokenType", String.class)) && !isExpired(token);
         } catch (TokenValidationException e) {
             return false;
         }
     }
 
-    // token 파싱
     private static Claims extractClaims(String token) {
         try {
             return Jwts.parserBuilder()
                     .setSigningKey(key)
                     .build()
-                    .parseClaimsJws(token.trim()) // 공백 제거 후 파싱
+                    .parseClaimsJws(token)
                     .getBody();
         } catch (ExpiredJwtException e) {
             throw new TokenValidationException("Token expired");
