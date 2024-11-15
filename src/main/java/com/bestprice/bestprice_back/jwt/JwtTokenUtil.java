@@ -59,7 +59,7 @@ public class JwtTokenUtil {
             throw new TokenValidationException("Invalid JWT structure. Expected 3 segments.");
         }
 
-        System.out.println("Parsing JWT token, userId extraction phase...");
+        // JWT 토큰을 파싱하여 userId를 추출하는 단계
         return extractClaims(token).get("userId", String.class);
     }
 
