@@ -10,12 +10,14 @@ import com.bestprice.bestprice_back.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/user")
@@ -35,20 +37,31 @@ public class UserController {
         return ResponseEntity.status(201).body("회원가입이 완료되었습니다. 인증 메일을 확인하세요.");
     }
 
-    @Operation(summary = "이메일 인증", description = "이메일 인증을 수행합니다.")
+    @Operation(summary = "이메일 인증", description = "이메일 활성화 링크를 클릭하면 서버측 /verify 로 이동되고 유저 활성화 후"
+            + "'프론트/login?activate=true' 로 리다이렉트 시킴. 프론트에서는 activate param을 보고 활성화가 완료됐다는 알림을 로그인 화면에 표시해야됨")
     @GetMapping("/verify")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "이메일 인증 성공"),
+            @ApiResponse(responseCode = "302", description = "'프론트주소/login?activate=true' 성공 시 리턴," +
+                    "<br>만료 시 프론트주소/resend-mail?expired=true 로 리다이렉트 "),
             @ApiResponse(responseCode = "400", description = "유효하지 않거나 만료된 인증 링크입니다.")
     })
-    public ResponseEntity<String> verifyEmail(@RequestParam String email, @RequestParam String token) {
+    public void verifyEmail(@RequestParam String email, @RequestParam String token, HttpServletResponse response) throws IOException {
         EmailVerificationDTO verificationDTO = new EmailVerificationDTO(email, token);
-        Optional<User> userOptional = userService.verifyEmail(verificationDTO);
+        
+        try {
+            // 이메일 인증 시도
+            Optional<User> userOptional = userService.verifyEmail(verificationDTO);
 
-        if (userOptional.isPresent()) {
-            return ResponseEntity.ok("이메일 인증이 완료되었습니다.");
-        } else {
-            return ResponseEntity.badRequest().body("유효하지 않거나 만료된 인증 링크입니다.");
+            if (userOptional.isPresent()) {
+                // 인증이 성공한 경우 로그인 페이지로 리다이렉트
+            response.sendRedirect("http://localhost:3000/login?activate=true");
+            } else {
+                // 유효하지 않거나 만료된 링크인 경우
+                response.sendRedirect("http://localhost:3000/resend-mail?expired=true");
+            }
+        } catch (Exception e) {
+            // 예외 발생 시 유효하지 않거나 만료된 링크로 리다이렉트
+            response.sendRedirect("http://localhost:3000/resend-mail?expired=true");
         }
     }
 

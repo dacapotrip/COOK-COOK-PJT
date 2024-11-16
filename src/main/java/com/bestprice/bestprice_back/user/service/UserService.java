@@ -45,20 +45,22 @@ public class UserService {
             helper.setFrom(new InternetAddress("bestpriceback@naver.com", "BestPrice_Admin", "UTF-8"));
             helper.setTo(email);
             helper.setSubject("회원가입 이메일 인증");
-
+    
+            // URL에 email 추가
             String body = "<div style='font-family: Arial, sans-serif;'>"
                     + "<h1>안녕하세요. BestPrice 입니다</h1>"
                     + "<br>"
                     + "<p>아래 링크를 클릭하면 이메일 인증이 완료됩니다.</p>"
-                    + "<a href='http://localhost:3000/user/verify?token=" + token + "' style='color: blue; text-decoration: underline;'>인증 링크</a>"
+                    + "<a href='http://localhost:8001/user/verify?token=" + token + "&email=" + email + "' style='color: blue; text-decoration: underline;'>인증 링크</a>"
                     + "</div>";
-
+    
             helper.setText(body, true);
             mailSender.send(message);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+    
 
     public Optional<User> login(String userId, String password) {
         Optional<User> userOptional = userMapper.findByUserId(userId);
