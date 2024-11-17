@@ -24,5 +24,10 @@ public class frdigeService {
         System.out.println(foodItem); // 저장 전 데이터 확인
         fridgeMapper.insertFoodItem(foodItem);
     }
+
+    public boolean deleteFoodItemById(int refrigerator) {
+        int deletedRows = fridgeMapper.deleteFoodItemById(refrigerator);
+        return deletedRows > 0; // 삭제된 행이 있으면 true 반환
+    }
     
 }

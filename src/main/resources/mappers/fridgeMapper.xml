@@ -23,4 +23,8 @@
         VALUES (#{category}, #{emoji}, #{name}, #{quantity}, #{expiration_date}, #{is_frozen})
     </insert>
 
+    <delete id="deleteFoodItemById">
+        DELETE FROM refrigerator WHERE refrigerator = #{refrigerator}
+    </delete>
+
 </mapper>

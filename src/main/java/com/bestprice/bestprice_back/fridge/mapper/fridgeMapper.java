@@ -12,4 +12,6 @@ public interface fridgeMapper {
     List<fridgeDTO> getAllFoodItems();
 
     void insertFoodItem(fridgeDTO foodItem);
+
+    int deleteFoodItemById(int refrigerator);
 }
