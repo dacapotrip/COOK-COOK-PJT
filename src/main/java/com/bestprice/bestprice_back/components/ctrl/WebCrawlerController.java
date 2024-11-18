@@ -48,7 +48,7 @@ public class WebCrawlerController {
 
     }
 
-    @GetMapping("/allrecipes")
+    @GetMapping("/allrecipes") //전체 레시피 검색
     public List<RecipeDto> recipe(){
 
         List<RecipeDto> list = null;
@@ -59,7 +59,7 @@ public class WebCrawlerController {
     }
 
 
-    @GetMapping("/getrecipe")
+    @GetMapping("/getrecipe") // "http://localhost:8001/getrecipe?query=음식이름" 으로 검색
     public List<RecipeDto> searchRecipe(@RequestParam("query") String query){
         
         List<RecipeDto> recipe = null;
