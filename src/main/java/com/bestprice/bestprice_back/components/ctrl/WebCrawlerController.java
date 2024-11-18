@@ -48,12 +48,12 @@ public class WebCrawlerController {
 
     }
 
-    @GetMapping("/recipes")
+    @GetMapping("/allrecipes")
     public List<RecipeDto> recipe(){
 
         List<RecipeDto> list = null;
 
-        list = searchMapper.allRecipes();
+        list = webCrawlerService.allRecipes();
 
         return list;
     }
@@ -64,7 +64,7 @@ public class WebCrawlerController {
         
         List<RecipeDto> recipe = null;
 
-        recipe = searchMapper.getRecipe(query);
+        recipe = webCrawlerService.getRecipes(query);
 
         try {
             

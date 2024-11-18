@@ -8,13 +8,19 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.bestprice.bestprice_back.components.domain.RecipeDetailDto;
 import com.bestprice.bestprice_back.components.domain.RecipeDto;
+import com.bestprice.bestprice_back.dao.SearchMapper;
 
 @Service
 public class WebCrawlerService {
+
+    @Autowired
+    private SearchMapper searchMapper;
 
     public RecipeDetailDto crawl(String query) {
         List<RecipeDetailDto> recipes = new ArrayList<>(); // 리스트 초기화
@@ -93,6 +99,24 @@ public class WebCrawlerService {
         }
 
         return null;
+    }
+
+    public List<RecipeDto> allRecipes (){
+
+        List<RecipeDto> list = null;
+
+        list = searchMapper.allRecipes();
+
+        return list;
+    }
+
+    public List<RecipeDto> getRecipes (@RequestParam("query") String qeury){
+
+        List<RecipeDto> list = null;
+
+        list = searchMapper.getRecipe(qeury);
+
+        return list;
     }
 
 
