@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bestprice.bestprice_back.user.dao.UserMapper">
+
+    <!-- joinUser --> 
+    <insert id="joinUser"
+            parameterType="com.bestprice.bestprice_back.user.dto.UserRegisterDTO">
+        INSERT INTO user (user_id, password, name, nickname, email, role, verified, token)
+        VALUES (#{userId}, #{password}, #{name}, #{nickname}, #{email}, #{role}, #{verified}, #{token})
+    </insert>
+
+    <select id="findByUserId"
+        parameterType="String"
+        resultMap="UserResultMap">
+        SELECT * FROM user WHERE user_id = #{userId}
+    </select>
+
+    <resultMap id="UserResultMap" type="com.bestprice.bestprice_back.user.domain.User">
+        <result property="userId" column="user_id"/>
+        <result property="password" column="password"/>
+        <!-- 추가적인 필드 매핑이 필요하면 여기에 작성 -->
+    </resultMap>
+
+
+    <!-- findByToken --> 
+    <select id="findByToken"
+            parameterType="String" 
+            resultType="com.bestprice.bestprice_back.user.domain.User">
+        SELECT * FROM user WHERE token = #{token}
+    </select>    
+
+    <!-- updateStateByToken --> 
+    <update id="updateStateByToken"
+            parameterType="String">
+        UPDATE user SET verified = 1 WHERE token = #{token}
+    </update>    
+
+    <!-- findByEmail --> 
+    <select id="findByEmail"
+            parameterType="String" 
+            resultType="com.bestprice.bestprice_back.user.domain.User">
+        SELECT * FROM user WHERE email = #{email}
+    </select>
+
+    <!-- updateResetToken --> 
+    <update id="updateResetToken"
+            parameterType="map">
+        UPDATE user SET token = #{token} WHERE user_id = #{userId}
+    </update>
+
+    <!-- updatePassword --> 
+    <update id="updatePassword"
+            parameterType="map">
+        UPDATE user SET password = #{password} WHERE user_id = #{userId}
+    </update>
+
+    <!-- clearResetToken --> 
+    <update id="clearResetToken"
+            parameterType="String">
+        UPDATE user SET token = NULL WHERE user_id = #{userId}
+    </update>
+
+    <!-- deleteUser --> 
+    <delete id="deleteUser"
+            parameterType="String">
+        DELETE FROM user WHERE user_id = #{userId}
+    </delete>
+
+    <!-- findByResetToken --> 
+    <select id="findByResetToken"
+            parameterType="String" 
+            resultType="com.bestprice.bestprice_back.user.domain.User">
+        SELECT * FROM user WHERE token = #{token}
+    </select>
+
+</mapper>
