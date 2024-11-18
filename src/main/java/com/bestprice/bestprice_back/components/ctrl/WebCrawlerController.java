@@ -48,29 +48,32 @@ public class WebCrawlerController {
 
     }
 
-    @GetMapping("/allrecipes") //전체 레시피 검색
-    public List<RecipeDto> recipe(){
+    @GetMapping("/allrecipes") // 전체 레시피 검색
+    public List<RecipeDto> recipe() {
 
         List<RecipeDto> list = null;
 
         list = webCrawlerService.allRecipes();
 
+        for (RecipeDto result : list) {
+            String RCPNUM = result.getRCP_SNO();
+            String temp = webCrawlerService.imgSet(RCPNUM);
+            result.setIMG_URL(temp);
+        }
         return list;
     }
 
-
     @GetMapping("/getrecipe") // "http://localhost:8001/getrecipe?query=음식이름" 으로 검색
-    public List<RecipeDto> searchRecipe(@RequestParam("query") String query){
-        
+    public List<RecipeDto> searchRecipe(@RequestParam("query") String query) {
+
         List<RecipeDto> recipe = null;
 
         recipe = webCrawlerService.getRecipes(query);
 
-        try {
-            
-
-        } catch (Exception e) {
-
+        for (RecipeDto result : recipe) {
+            String RCPNUM = result.getRCP_SNO();
+            String temp = webCrawlerService.imgSet(RCPNUM);
+            result.setIMG_URL(temp);
         }
 
         return recipe;

@@ -25,7 +25,7 @@ public class WebCrawlerService {
     public RecipeDetailDto crawl(String query) {
         List<RecipeDetailDto> recipes = new ArrayList<>(); // 리스트 초기화
         String url = "https://www.10000recipe.com/recipe/" + query;
-        System.out.println(url);
+        // System.out.println(url);
         RecipeDetailDto recipeDto = new RecipeDetailDto();
 
         try {
@@ -61,7 +61,7 @@ public class WebCrawlerService {
 
                     recipes.add(recipeDto); // 리스트에 추가
                 } else {
-                    System.out.println("steps is null!");
+                    // System.out.println("steps is null!");
                     break;
                 }
             }
@@ -71,7 +71,7 @@ public class WebCrawlerService {
             for (Element compResult : compImg) {
                 String compImgUrl = compResult.attr("src");
                 compList.add(compImgUrl);
-                System.out.println(compImgUrl);
+                // System.out.println(compImgUrl);
             }
             recipeDto.setComp(compList);
 
@@ -82,23 +82,23 @@ public class WebCrawlerService {
         return recipeDto; // 결과 반환
     }
 
-    public RecipeDto imgSet(String query){
+    public String imgSet(String query){
         List<RecipeDetailDto> recipes = new ArrayList<>(); // 리스트 초기화
         String url = "https://www.10000recipe.com/recipe/" + query;
-        System.out.println(url);
+        // System.out.println(url);
         RecipeDto recipeImage = new RecipeDto();
-        
+        String mainThumb = null;
         try {
             Document document = Jsoup.connect(url).get();
             Element mainImg = document.getElementById("main_thumbs");
-            String mainThumb = mainImg != null ? mainImg.attr("src") : null;
+            mainThumb = mainImg != null ? mainImg.attr("src") : null;
 
             recipeImage.setIMG_URL(mainThumb);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return null;
+        return mainThumb;
     }
 
     public List<RecipeDto> allRecipes (){
