@@ -1,4 +1,4 @@
-package com.bestprice.bestprice_back.dao;
+package com.bestprice.bestprice_back.components.dao;
 
 import java.util.List;
 
