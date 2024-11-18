@@ -29,4 +29,9 @@
         SELECT * FROM recipe WHERE CKG_NM LIKE CONCAT('%',#{query},'%') ORDER BY RAND() LIMIT 20;
     </select>
 
+    <!-- allRecipes --> 
+
+    <select id="allRecipes" resultType="com.bestprice.bestprice_back.components.domain.RecipeDto">
+        SELECT * FROM recipe ORDER BY RAND() LIMIT 20;
+    </select>
     </mapper>

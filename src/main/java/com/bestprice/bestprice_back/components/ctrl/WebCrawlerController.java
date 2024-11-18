@@ -48,6 +48,17 @@ public class WebCrawlerController {
 
     }
 
+    @GetMapping("/recipes")
+    public List<RecipeDto> recipe(){
+
+        List<RecipeDto> list = null;
+
+        list = searchMapper.allRecipes();
+
+        return list;
+    }
+
+
     @GetMapping("/getrecipe")
     public List<RecipeDto> searchRecipe(@RequestParam("query") String query){
         

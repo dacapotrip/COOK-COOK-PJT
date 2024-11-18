@@ -15,6 +15,8 @@ public interface SearchMapper {
 
     public List<ShopSearchDto> existChk(String query);
 
+    public List<RecipeDto> allRecipes();
+
     public List<RecipeDto> getRecipe(String query);
 
 }
