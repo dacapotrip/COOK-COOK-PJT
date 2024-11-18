@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace=" com.bestprice.bestprice_back.components.dao.SearchMapper">
+
+    <!-- searchResultRow --> 
+
+    <insert id="searchResultRow" parameterType="com.bestprice.bestprice_back.components.domain.ShopSearchDto">
+        INSERT INTO product (productid, baseprice, price, link, productname, description, imgurl, category, subcategory, discount, recipeid)
+        VALUES
+        <foreach collection="params" item="item" separator=",">
+            (#{item.productId}, #{item.basePrice}, #{item.price}, #{item.link}, #{item.productName}, #{item.description}, #{item.imgUrl}, #{item.category}, #{item.subCategory}, #{item.discount}, #{item.recipeId})
+        </foreach>
+        ON DUPLICATE KEY UPDATE productname = VALUES(productname), discount = VALUES(discount), price = VALUES(price),imgurl = VALUES(imgurl);
+        
+    </insert>
+
+
+    <!-- existChk --> 
+
+    <select id="existChk" parameterType="java.lang.String" resultType="com.bestprice.bestprice_back.components.domain.ShopSearchDto">
+        SELECT * FROM product WHERE productName LIKE CONCAT('%',#{query},'%')
+    </select>
+</mapper>
