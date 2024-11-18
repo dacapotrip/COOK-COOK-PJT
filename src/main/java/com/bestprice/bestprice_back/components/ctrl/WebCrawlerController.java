@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bestprice.bestprice_back.components.domain.RecipeDetailDto;
+import com.bestprice.bestprice_back.components.domain.RecipeDto;
 import com.bestprice.bestprice_back.components.domain.ShopSearchDto;
 import com.bestprice.bestprice_back.components.service.SearchService;
 import com.bestprice.bestprice_back.components.service.WebCrawlerService;
@@ -38,7 +39,7 @@ public class WebCrawlerController {
     private apiService apiservice;
 
     @GetMapping("/recipe")
-    public RecipeDetailDto crawl(@RequestParam String query) {
+    public RecipeDetailDto crawl(@RequestParam("query") String query) {
 
         RecipeDetailDto list = null;
 
@@ -47,12 +48,21 @@ public class WebCrawlerController {
 
     }
 
-    @GetMapping("/searchRecipe")
-    public RecipeDetailDto searchRecipe(@RequestParam String query){
+    @GetMapping("/getrecipe")
+    public List<RecipeDto> searchRecipe(@RequestParam("query") String query){
+        
+        List<RecipeDto> recipe = null;
 
-        RecipeDetailDto list = null;
+        recipe = searchMapper.getRecipe(query);
 
-        return list;
+        try {
+            
+
+        } catch (Exception e) {
+
+        }
+
+        return recipe;
     }
 
     @GetMapping("/shop")

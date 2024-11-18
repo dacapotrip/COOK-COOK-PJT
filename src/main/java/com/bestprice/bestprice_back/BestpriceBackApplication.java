@@ -9,11 +9,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /*
-    api 및 크롤링 전에 데이터 베이스 먼저 확인
+    레시피 db 불러올때 크롤링 데이터도 같이 보내기
 
-    데이터 삽입전에 중복 확인
+    product_price 테이블 채우기
 
-    db 저장할때 기본키 설정 현재 기본키 없음
+    
+
  */
 
 @SpringBootApplication

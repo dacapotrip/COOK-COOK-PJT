@@ -11,6 +11,7 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
 import com.bestprice.bestprice_back.components.domain.RecipeDetailDto;
+import com.bestprice.bestprice_back.components.domain.RecipeDto;
 
 @Service
 public class WebCrawlerService {
@@ -73,6 +74,25 @@ public class WebCrawlerService {
         }
 
         return recipeDto; // 결과 반환
+    }
+
+    public RecipeDto imgSet(String query){
+        List<RecipeDetailDto> recipes = new ArrayList<>(); // 리스트 초기화
+        String url = "https://www.10000recipe.com/recipe/" + query;
+        System.out.println(url);
+        RecipeDto recipeImage = new RecipeDto();
+        
+        try {
+            Document document = Jsoup.connect(url).get();
+            Element mainImg = document.getElementById("main_thumbs");
+            String mainThumb = mainImg != null ? mainImg.attr("src") : null;
+
+            recipeImage.setIMG_URL(mainThumb);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
 
