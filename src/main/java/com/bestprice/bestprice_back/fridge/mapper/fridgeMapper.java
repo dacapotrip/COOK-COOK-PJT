@@ -9,7 +9,7 @@ import com.bestprice.bestprice_back.fridge.DTO.fridgeDTO;
 @Mapper
 public interface fridgeMapper {
     
-    List<fridgeDTO> getAllFoodItems();
+    List<fridgeDTO> getAllFoodItems(String userId);
 
     void insertFoodItem(fridgeDTO foodItem);
 

@@ -14,8 +14,8 @@ public class frdigeService {
     @Autowired
     private fridgeMapper fridgeMapper;
 
-    public List<fridgeDTO> getAllFoodItems() {
-        List<fridgeDTO> items = fridgeMapper.getAllFoodItems();
+    public List<fridgeDTO> getAllFoodItems(String userId) {
+        List<fridgeDTO> items = fridgeMapper.getAllFoodItems(userId);
         System.out.println("DB 조회: " + items); // 데이터 확인
         return items;
     }

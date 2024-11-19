@@ -5,6 +5,7 @@
 
     <resultMap id="foodItemMap" type="com.bestprice.bestprice_back.fridge.DTO.fridgeDTO">
         <result property="category" column="category"/>
+        <result property="userId" column="user_id"/>
         <result property="emoji" column="emoji"/>
         <result property="name" column="name"/>
         <result property="quantity" column="quantity"/>
@@ -13,14 +14,14 @@
     </resultMap>
 
     <!-- 모든 식료품을 가져오는 쿼리 -->
-    <select id="getAllFoodItems" resultType="com.bestprice.bestprice_back.fridge.DTO.fridgeDTO">
-        SELECT * FROM refrigerator
+    <select id="getAllFoodItems" resultMap="foodItemMap">
+        SELECT * FROM refrigerator WHERE user_id = #{userId}
     </select>
 
     <!-- 새로운 식료품을 추가하는 쿼리 -->
     <insert id="insertFoodItem">
-        INSERT INTO refrigerator (category, emoji, name, quantity, expiration_date, is_frozen)
-        VALUES (#{category}, #{emoji}, #{name}, #{quantity}, #{expiration_date}, #{is_frozen})
+        INSERT INTO refrigerator (user_id, category, emoji, name, quantity, expiration_date, is_frozen)
+        VALUES (#{userId}, #{category}, #{emoji}, #{name}, #{quantity}, #{expiration_date}, #{is_frozen})
     </insert>
 
     <delete id="deleteFoodItemById">
