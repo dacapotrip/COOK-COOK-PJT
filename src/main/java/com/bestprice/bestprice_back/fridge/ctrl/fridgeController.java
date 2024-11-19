@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+//import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bestprice.bestprice_back.fridge.DTO.fridgeDTO;
@@ -22,17 +23,17 @@ public class fridgeController {
     private frdigeService foodItemService;
 
     @GetMapping
-    public List<fridgeDTO> getAllFoodItems() {
-        List<fridgeDTO> foodItems = foodItemService.getAllFoodItems();
+    public List<fridgeDTO> getAllFoodItems(String userId) {
+        List<fridgeDTO> foodItems = foodItemService.getAllFoodItems(userId);
         System.out.println("식료품 데이터" + foodItems); // 데이터 확인
         return foodItems;
     }
-    
+
     @PostMapping
-    public String saveFoodItem(@RequestBody fridgeDTO foodItem) {
+    public ResponseEntity<String> saveFoodItem(@RequestBody fridgeDTO foodItem) {
         System.out.println("저장 데이터: " + foodItem); // 요청 받은 데이터를 출력
         foodItemService.saveFoodItem(foodItem);
-        return "식료품이 성공적으로 저장되었습니다!";
+        return ResponseEntity.ok("식료품이 성공적으로 저장되었습니다!");
     }
 
     @DeleteMapping("/{refrigerator}")

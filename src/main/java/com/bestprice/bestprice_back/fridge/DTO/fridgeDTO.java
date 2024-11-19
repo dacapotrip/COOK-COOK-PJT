@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class fridgeDTO {
     private int refrigerator; 
-    //private int userId;     
+    private String userId;     
     private String category;  
     private String emoji;
     private String name;
