@@ -38,6 +38,27 @@ public class WebCrawlerController {
     @Autowired
     private apiService apiservice;
 
+    /* 레시피 이미지 추가 코드
+    @GetMapping("image") // 
+    public String recipeSet(){
+
+        List<RecipeDto> list = null;
+
+        list = webCrawlerService.insertImg();
+
+        for (RecipeDto result : list) {
+            Integer RCPNUM = result.getRCP_SNO();
+            String temp = webCrawlerService.imgSet(RCPNUM);
+            searchMapper.imageSet(RCPNUM, temp);
+            int t = 1;
+            System.out.println(t + (",") + RCPNUM + " Set Image");
+            t++;
+        }
+
+        return ("End..");
+    }
+    */
+
     @GetMapping("/recipe")
     public RecipeDetailDto crawl(@RequestParam("query") String query) {
 
@@ -55,11 +76,6 @@ public class WebCrawlerController {
 
         list = webCrawlerService.allRecipes();
 
-        for (RecipeDto result : list) {
-            String RCPNUM = result.getRCP_SNO();
-            String temp = webCrawlerService.imgSet(RCPNUM);
-            result.setIMG_URL(temp);
-        }
         return list;
     }
 
@@ -69,12 +85,6 @@ public class WebCrawlerController {
         List<RecipeDto> recipe = null;
 
         recipe = webCrawlerService.getRecipes(query);
-
-        for (RecipeDto result : recipe) {
-            String RCPNUM = result.getRCP_SNO();
-            String temp = webCrawlerService.imgSet(RCPNUM);
-            result.setIMG_URL(temp);
-        }
 
         return recipe;
     }

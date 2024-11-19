@@ -19,4 +19,8 @@ public interface SearchMapper {
 
     public List<RecipeDto> getRecipe(String query);
 
+    public List<RecipeDto> oneRecipe();
+
+    public void imageSet(Integer RCPNUM, String temp);
+
 }

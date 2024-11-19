@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class RecipeDto {
     
-    private String RCP_SNO;            // RCP_SNO bigint PK
+    private Integer RCP_SNO;            // RCP_SNO bigint PK
     private String RCP_TTL;          // RCP_TTL varchar(255)
     private String CKG_NM;           // CKG_NM varchar(255)
     private String RGTR_ID;          // RGTR_ID varchar(50)
@@ -25,6 +25,6 @@ public class RecipeDto {
     private String CKG_DODF_NM;      // CKG_DODF_NM varchar(50)
     private String CKG_TIME_NM;      // CKG_TIME_NM varchar(50)
     private LocalDateTime FIRST_REG_DT;  // FIRST_REG_DT datetime
-    private String IMG_URL;
+    private String IMAGE_URL;
     
 }

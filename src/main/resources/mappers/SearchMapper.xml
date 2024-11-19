@@ -32,6 +32,18 @@
     <!-- allRecipes --> 
 
     <select id="allRecipes" resultType="com.bestprice.bestprice_back.components.domain.RecipeDto">
-        SELECT * FROM recipe ORDER BY RAND() LIMIT 20;
+        SELECT * FROM recipe limit 20;
     </select>
+
+    <!-- oneRecipe --> 
+
+    <select id="oneRecipe" resultType="com.bestprice.bestprice_back.components.domain.RecipeDto">
+        SELECT * FROM recipe WHERE image_url is null ORDER BY RAND() ;
+    </select>    
+
+    <!-- imageSet --> 
+
+    <insert id="imageSet">
+        UPDATE recipe SET image_url = #{temp} WHERE RCP_SNO = #{RCPNUM};
+    </insert>    
     </mapper>

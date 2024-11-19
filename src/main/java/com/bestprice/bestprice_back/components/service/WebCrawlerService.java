@@ -12,9 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.bestprice.bestprice_back.components.dao.SearchMapper;
 import com.bestprice.bestprice_back.components.domain.RecipeDetailDto;
 import com.bestprice.bestprice_back.components.domain.RecipeDto;
-import com.bestprice.bestprice_back.components.dao.SearchMapper;
 
 @Service
 public class WebCrawlerService {
@@ -82,25 +82,6 @@ public class WebCrawlerService {
         return recipeDto; // 결과 반환
     }
 
-    public String imgSet(String query){
-        List<RecipeDetailDto> recipes = new ArrayList<>(); // 리스트 초기화
-        String url = "https://www.10000recipe.com/recipe/" + query;
-        // System.out.println(url);
-        RecipeDto recipeImage = new RecipeDto();
-        String mainThumb = null;
-        try {
-            Document document = Jsoup.connect(url).get();
-            Element mainImg = document.getElementById("main_thumbs");
-            mainThumb = mainImg != null ? mainImg.attr("src") : null;
-
-            recipeImage.setIMG_URL(mainThumb);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return mainThumb;
-    }
-
     public List<RecipeDto> allRecipes (){
 
         List<RecipeDto> list = null;
@@ -116,6 +97,13 @@ public class WebCrawlerService {
 
         list = searchMapper.getRecipe(qeury);
 
+        return list;
+    }
+
+    public List<RecipeDto> insertImg (){       
+        
+        List<RecipeDto> list = searchMapper.oneRecipe();
+        
         return list;
     }
 
