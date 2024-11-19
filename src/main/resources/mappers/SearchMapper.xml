@@ -21,4 +21,17 @@
     <select id="existChk" parameterType="java.lang.String" resultType="com.bestprice.bestprice_back.components.domain.ShopSearchDto">
         SELECT * FROM product WHERE productName LIKE CONCAT('%',#{query},'%')
     </select>
-</mapper>
+
+
+    <!-- getRecipe --> 
+
+    <select id="getRecipe" parameterType="java.lang.String" resultType="com.bestprice.bestprice_back.components.domain.RecipeDto">
+        SELECT * FROM recipe WHERE CKG_NM LIKE CONCAT('%',#{query},'%') ORDER BY RAND() LIMIT 20;
+    </select>
+
+    <!-- allRecipes --> 
+
+    <select id="allRecipes" resultType="com.bestprice.bestprice_back.components.domain.RecipeDto">
+        SELECT * FROM recipe ORDER BY RAND() LIMIT 20;
+    </select>
+    </mapper>
