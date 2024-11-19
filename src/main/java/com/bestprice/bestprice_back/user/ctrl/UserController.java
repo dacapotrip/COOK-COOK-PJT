@@ -45,16 +45,17 @@ public class UserController {
                     "<br>만료 시 프론트주소/resend-mail?expired=true 로 리다이렉트 "),
             @ApiResponse(responseCode = "400", description = "유효하지 않거나 만료된 인증 링크입니다.")
     })
-    public void verifyEmail(@RequestParam String email, @RequestParam String token, HttpServletResponse response) throws IOException {
+    public void verifyEmail(@RequestParam String email, @RequestParam String token, HttpServletResponse response)
+            throws IOException {
         EmailVerificationDTO verificationDTO = new EmailVerificationDTO(email, token);
-        
+
         try {
             // 이메일 인증 시도
             Optional<User> userOptional = userService.verifyEmail(verificationDTO);
 
             if (userOptional.isPresent()) {
                 // 인증이 성공한 경우 로그인 페이지로 리다이렉트
-            response.sendRedirect("http://localhost:3000/login?activate=true");
+                response.sendRedirect("http://localhost:3000/login?activate=true");
             } else {
                 // 유효하지 않거나 만료된 링크인 경우
                 response.sendRedirect("http://localhost:3000/resend-mail?expired=true");
@@ -87,26 +88,27 @@ public class UserController {
         // 사용자 인증
         Optional<User> userOptional = userService.login(userId, password);
 
-        if (userOptional.isPresent() && userOptional.get().getUserId() != null) { // 추가 검증
-            String userIdToUse = userOptional.get().getUserId();
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
 
-            // JWT 생성 직전 userId 확인
-            System.out.println("Creating JWT for userId: '" + userIdToUse + "' (length: " + userIdToUse.length() + ")");
-
-            // JWT 생성 (정적 메서드 호출)
-            String accessToken = JwtTokenUtil.createAccessToken(userIdToUse, 3600000); // 1시간
-            String refreshToken = JwtTokenUtil.createRefreshToken(userIdToUse, 86400000); // 24시간
+            // JWT 생성
+            String accessToken = JwtTokenUtil.createAccessToken(user.getUserId(), 3600000); // 1시간
+            String refreshToken = JwtTokenUtil.createRefreshToken(user.getUserId(), 86400000); // 24시간
 
             // 응답 DTO 설정
             LoginResponseDTO response = new LoginResponseDTO();
+            response.setUserId(user.getUserId());
+            response.setName(user.getName());
+            response.setNickname(user.getNickname());
+            response.setEmail(user.getEmail());
             response.setAccessToken(accessToken);
             response.setRefreshToken(refreshToken);
+
             return ResponseEntity.ok(response);
         } else {
             System.err.println("Login failed for userId: " + userId);
             return ResponseEntity.status(401).body(null); // Unauthorized
         }
-
     }
 
     @Operation(summary = "로그아웃", description = "사용자를 로그아웃합니다.")
