@@ -8,17 +8,24 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.bestprice.bestprice_back.components.domain.RecipeDetailDto;
+import com.bestprice.bestprice_back.components.domain.RecipeDto;
+import com.bestprice.bestprice_back.dao.SearchMapper;
 
 @Service
 public class WebCrawlerService {
 
+    @Autowired
+    private SearchMapper searchMapper;
+
     public RecipeDetailDto crawl(String query) {
         List<RecipeDetailDto> recipes = new ArrayList<>(); // 리스트 초기화
         String url = "https://www.10000recipe.com/recipe/" + query;
-        System.out.println(url);
+        // System.out.println(url);
         RecipeDetailDto recipeDto = new RecipeDetailDto();
 
         try {
@@ -54,7 +61,7 @@ public class WebCrawlerService {
 
                     recipes.add(recipeDto); // 리스트에 추가
                 } else {
-                    System.out.println("steps is null!");
+                    // System.out.println("steps is null!");
                     break;
                 }
             }
@@ -64,7 +71,7 @@ public class WebCrawlerService {
             for (Element compResult : compImg) {
                 String compImgUrl = compResult.attr("src");
                 compList.add(compImgUrl);
-                System.out.println(compImgUrl);
+                // System.out.println(compImgUrl);
             }
             recipeDto.setComp(compList);
 
@@ -75,9 +82,45 @@ public class WebCrawlerService {
         return recipeDto; // 결과 반환
     }
 
+    public String imgSet(String query){
+        List<RecipeDetailDto> recipes = new ArrayList<>(); // 리스트 초기화
+        String url = "https://www.10000recipe.com/recipe/" + query;
+        // System.out.println(url);
+        RecipeDto recipeImage = new RecipeDto();
+        String mainThumb = null;
+        try {
+            Document document = Jsoup.connect(url).get();
+            Element mainImg = document.getElementById("main_thumbs");
+            mainThumb = mainImg != null ? mainImg.attr("src") : null;
+
+            recipeImage.setIMG_URL(mainThumb);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return mainThumb;
+    }
+
+    public List<RecipeDto> allRecipes (){
+
+        List<RecipeDto> list = null;
+
+        list = searchMapper.allRecipes();
+
+        return list;
+    }
+
+    public List<RecipeDto> getRecipes (@RequestParam("query") String qeury){
+
+        List<RecipeDto> list = null;
+
+        list = searchMapper.getRecipe(qeury);
+
+        return list;
+    }
+
 
     // private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     
 }
-
