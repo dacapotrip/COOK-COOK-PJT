@@ -15,12 +15,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bestprice.bestprice_back.components.dao.SearchMapper;
 import com.bestprice.bestprice_back.components.domain.RecipeDetailDto;
+import com.bestprice.bestprice_back.components.domain.RecipeDto;
 import com.bestprice.bestprice_back.components.domain.ShopSearchDto;
 import com.bestprice.bestprice_back.components.service.SearchService;
 import com.bestprice.bestprice_back.components.service.WebCrawlerService;
 import com.bestprice.bestprice_back.components.service.apiService;
+import com.bestprice.bestprice_back.dao.SearchMapper;
 
 @RestController
 public class WebCrawlerController {
@@ -38,7 +39,7 @@ public class WebCrawlerController {
     private apiService apiservice;
 
     @GetMapping("/recipe")
-    public RecipeDetailDto crawl(@RequestParam String query) {
+    public RecipeDetailDto crawl(@RequestParam("query") String query) {
 
         RecipeDetailDto list = null;
 
@@ -47,12 +48,35 @@ public class WebCrawlerController {
 
     }
 
-    @GetMapping("/searchRecipe")
-    public RecipeDetailDto searchRecipe(@RequestParam String query){
+    @GetMapping("/allrecipes") // 전체 레시피 검색
+    public List<RecipeDto> recipe() {
 
-        RecipeDetailDto list = null;
+        List<RecipeDto> list = null;
 
+        list = webCrawlerService.allRecipes();
+
+        for (RecipeDto result : list) {
+            String RCPNUM = result.getRCP_SNO();
+            String temp = webCrawlerService.imgSet(RCPNUM);
+            result.setIMG_URL(temp);
+        }
         return list;
+    }
+
+    @GetMapping("/getrecipe") // "http://localhost:8001/getrecipe?query=음식이름" 으로 검색
+    public List<RecipeDto> searchRecipe(@RequestParam("query") String query) {
+
+        List<RecipeDto> recipe = null;
+
+        recipe = webCrawlerService.getRecipes(query);
+
+        for (RecipeDto result : recipe) {
+            String RCPNUM = result.getRCP_SNO();
+            String temp = webCrawlerService.imgSet(RCPNUM);
+            result.setIMG_URL(temp);
+        }
+
+        return recipe;
     }
 
     @GetMapping("/shop")
