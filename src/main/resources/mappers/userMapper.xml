@@ -74,4 +74,9 @@
         SELECT * FROM user WHERE token = #{token}
     </select>
 
+    <!-- updateNickname --> 
+    <update id="updateNickname"
+            parameterType="com.bestprice.bestprice_back.user.dto.NicknameChangeDTO">
+        UPDATE user SET nickname = #{newNickname} WHERE user_id = #{userId}
+    </update>
 </mapper>

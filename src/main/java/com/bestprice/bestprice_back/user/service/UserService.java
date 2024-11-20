@@ -3,6 +3,7 @@ package com.bestprice.bestprice_back.user.service;
 import com.bestprice.bestprice_back.user.dao.UserMapper;
 import com.bestprice.bestprice_back.user.domain.User;
 import com.bestprice.bestprice_back.user.dto.EmailVerificationDTO;
+import com.bestprice.bestprice_back.user.dto.NicknameChangeDTO;
 import com.bestprice.bestprice_back.user.dto.UserRegisterDTO;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
@@ -45,30 +46,30 @@ public class UserService {
             helper.setFrom(new InternetAddress("bestpriceback@naver.com", "BestPrice_Admin", "UTF-8"));
             helper.setTo(email);
             helper.setSubject("회원가입 이메일 인증");
-    
+
             // URL에 email 추가
             String body = "<div style='font-family: Arial, sans-serif;'>"
                     + "<h1>안녕하세요. BestPrice 입니다</h1>"
                     + "<br>"
                     + "<p>아래 링크를 클릭하면 이메일 인증이 완료됩니다.</p>"
-                    + "<a href='http://localhost:8001/user/verify?token=" + token + "&email=" + email + "' style='color: blue; text-decoration: underline;'>인증 링크</a>"
+                    + "<a href='http://localhost:8001/user/verify?token=" + token + "&email=" + email
+                    + "' style='color: blue; text-decoration: underline;'>인증 링크</a>"
                     + "</div>";
-    
+
             helper.setText(body, true);
             mailSender.send(message);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    
 
     public Optional<User> login(String userId, String password) {
         Optional<User> userOptional = userMapper.findByUserId(userId);
-        
+
         if (userOptional.isPresent()) {
             User user = userOptional.get();
             System.out.println("Found userId in database: " + user.getUserId()); // userId 값 확인
-    
+
             if (passwordEncoder.matches(password, user.getPassword())) {
                 return userOptional;
             } else {
@@ -79,7 +80,6 @@ public class UserService {
         }
         return Optional.empty();
     }
-    
 
     public Optional<User> verifyEmail(EmailVerificationDTO emailVerificationDTO) {
         String email = emailVerificationDTO.getEmail();
@@ -101,7 +101,7 @@ public class UserService {
         // 로그아웃 시 리프레시 토큰 삭제
         userMapper.clearResetToken(userId); // 리프레시 토큰을 NULL로 설정
     }
-    
+
     @Transactional
     public void passwordResetRequest(String email) {
         Optional<User> userOptional = userMapper.findByEmail(email);
@@ -126,7 +126,8 @@ public class UserService {
                     + "<h1>비밀번호 초기화 요청</h1>"
                     + "<br>"
                     + "<p>아래 링크를 클릭하여 비밀번호를 변경하세요.</p>"
-                    + "<a href='http://localhost:3000/user/password/reset?token=" + token + "' style='color: blue; text-decoration: underline;'>비밀번호 변경하기</a>"
+                    + "<a href='http://localhost:3000/user/password/reset?token=" + token
+                    + "' style='color: blue; text-decoration: underline;'>비밀번호 변경하기</a>"
                     + "</div>";
 
             helper.setText(body, true);
@@ -149,10 +150,21 @@ public class UserService {
     }
 
     @Transactional
+    public void changeNickname(NicknameChangeDTO nicknameChangeDTO) {
+        Optional<User> userOptional = userMapper.findByUserId(nicknameChangeDTO.getUserId());
+
+        if (userOptional.isPresent()) {
+            userMapper.updateNickname(nicknameChangeDTO);
+        } else {
+            throw new IllegalArgumentException("사용자를 찾을 수 없습니다.");
+        }
+    }
+
+    @Transactional
     public void deleteUser(String userId, String password) {
         Optional<User> userOptional = userMapper.findByUserId(userId);
         if (userOptional.isPresent() && passwordEncoder.matches(password, userOptional.get().getPassword())) {
-            userMapper.deleteUser(userId); 
+            userMapper.deleteUser(userId);
         } else {
             throw new IllegalArgumentException("비밀번호가 일치하지 않거나 사용자가 존재하지 않습니다.");
         }

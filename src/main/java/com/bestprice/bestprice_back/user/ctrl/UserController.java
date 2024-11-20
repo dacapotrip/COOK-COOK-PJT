@@ -5,6 +5,7 @@ import com.bestprice.bestprice_back.user.domain.User;
 import com.bestprice.bestprice_back.user.dto.EmailVerificationDTO;
 import com.bestprice.bestprice_back.user.dto.LoginRequestDTO;
 import com.bestprice.bestprice_back.user.dto.LoginResponseDTO;
+import com.bestprice.bestprice_back.user.dto.NicknameChangeDTO;
 import com.bestprice.bestprice_back.user.dto.UserRegisterDTO;
 import com.bestprice.bestprice_back.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -148,6 +149,21 @@ public class UserController {
         String email = userRegisterDTO.getEmail();
         userService.passwordResetRequest(email);
         return ResponseEntity.status(201).body(email + " 메일함을 확인하여 비밀번호 초기화 진행해주세요.");
+    }
+
+    @Operation(summary = "닉네임 변경", description = "사용자의 닉네임을 변경합니다.")
+    @PatchMapping("/nickname")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "닉네임 변경 성공"),
+            @ApiResponse(responseCode = "400", description = "유효하지 않은 요청")
+    })
+    public ResponseEntity<String> changeNickname(@Valid @RequestBody NicknameChangeDTO nicknameChangeDTO) {
+        try {
+            userService.changeNickname(nicknameChangeDTO);
+            return ResponseEntity.ok("닉네임이 성공적으로 변경되었습니다.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(400).body("닉네임 변경에 실패하였습니다. " + e.getMessage());
+        }
     }
 
     @Operation(summary = "새 비밀번호로 변경", description = "새 비밀번호를 설정합니다.")

@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.bestprice.bestprice_back.user.domain.User;
+import com.bestprice.bestprice_back.user.dto.NicknameChangeDTO;
 import com.bestprice.bestprice_back.user.dto.UserRegisterDTO;
 
 @Mapper
@@ -30,4 +31,6 @@ public interface UserMapper {
     void deleteUser(String userId); // 사용자 삭제
 
     Optional<User> findByResetToken(String token); // 토큰으로 사용자 조회
+
+    void updateNickname(NicknameChangeDTO nicknameChangeDTO); // 닉네임 업데이트
 }
