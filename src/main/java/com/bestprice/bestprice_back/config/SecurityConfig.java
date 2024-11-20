@@ -30,17 +30,17 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-            .csrf(AbstractHttpConfigurer::disable)
-            .sessionManagement(sessionManagement -> 
-                sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            )
-            .authorizeHttpRequests(requests -> {
-                
-                    //requests.requestMatchers("/user/login", "/user/register").permitAll() // 로그인 및 회원가입은 허용
-                    //requests.anyRequest().authenticated(); // 나머지 요청은 인증 필요
+                .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(
+                        sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(requests -> {
+
+                    // requests.requestMatchers("/user/login", "/user/register").permitAll() // 로그인
+                    // 및 회원가입은 허용
+                    // requests.anyRequest().authenticated(); // 나머지 요청은 인증 필요
                     requests.anyRequest().permitAll();
-            })
-            .addFilterBefore(new JwtTokenFilter(userService), UsernamePasswordAuthenticationFilter.class);
+                })
+                .addFilterBefore(new JwtTokenFilter(userService), UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity.build(); // HttpSecurity 빌드 및 반환
     }
