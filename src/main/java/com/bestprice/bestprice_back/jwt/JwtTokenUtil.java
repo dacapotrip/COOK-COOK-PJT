@@ -16,16 +16,10 @@ public class JwtTokenUtil {
     private static final String SECRET_KEY = "66033f8ac5b9e47867e6bbda4c8757ac483106a0741bf9baed903fd39c1e850e";
     private static final SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
     private static final String ACCESS_TOKEN_TYPE = "access";
-    private static final String REFRESH_TOKEN_TYPE = "refresh";
 
     public static String createAccessToken(String userId, long expireTimeMs) {
         validateUserId(userId);
         return createToken(userId.trim(), expireTimeMs, ACCESS_TOKEN_TYPE);
-    }
-
-    public static String createRefreshToken(String userId, long expireTimeMs) {
-        validateUserId(userId);
-        return createToken(userId.trim(), expireTimeMs, REFRESH_TOKEN_TYPE);
     }
 
     private static void validateUserId(String userId) {
@@ -71,14 +65,6 @@ public class JwtTokenUtil {
         return ACCESS_TOKEN_TYPE.equals(extractClaims(token).get("tokenType", String.class));
     }
 
-    public static boolean validateRefreshToken(String token) {
-        try {
-            Claims claims = extractClaims(token);
-            return REFRESH_TOKEN_TYPE.equals(claims.get("tokenType", String.class)) && !isExpired(token);
-        } catch (TokenValidationException e) {
-            return false;
-        }
-    }
 
     private static Claims extractClaims(String token) {
         try {

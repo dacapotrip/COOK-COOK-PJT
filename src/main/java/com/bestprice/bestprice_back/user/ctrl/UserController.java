@@ -95,7 +95,6 @@ public class UserController {
 
             // JWT 생성
             String accessToken = JwtTokenUtil.createAccessToken(user.getUserId(), 3600000); // 1시간
-            String refreshToken = JwtTokenUtil.createRefreshToken(user.getUserId(), 86400000); // 24시간
 
             // 응답 DTO 설정
             LoginResponseDTO response = new LoginResponseDTO();
@@ -104,7 +103,6 @@ public class UserController {
             response.setNickname(user.getNickname());
             response.setEmail(user.getEmail());
             response.setAccessToken(accessToken);
-            response.setRefreshToken(refreshToken);
 
             return ResponseEntity.ok(response);
         } else {
@@ -132,8 +130,9 @@ public class UserController {
             // JWT에서 사용자 ID 추출
             String userId = JwtTokenUtil.getUserId(token);
 
-            // userService.logout에서 String 타입 userId 처리
+            // 로그아웃 처리
             userService.logout(userId);
+
             return ResponseEntity.ok("로그아웃이 완료되었습니다.");
         } catch (JwtTokenUtil.TokenValidationException e) {
             return ResponseEntity.badRequest().body("로그아웃 실패: " + e.getMessage());

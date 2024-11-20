@@ -99,8 +99,12 @@ public class UserService {
 
     @Transactional
     public void logout(String userId) {
-        // 로그아웃 시 리프레시 토큰 삭제
-        userMapper.clearResetToken(userId); // 리프레시 토큰을 NULL로 설정
+        try {
+            System.out.println("로그아웃 중: " + userId);
+        } catch (Exception e) {
+            System.err.println("로그아웃 도중 에러가 발생했습니다. " + userId + ": " + e.getMessage());
+            throw new RuntimeException("로그아웃에 실패했습니다.");
+        }
     }
 
     @Transactional
@@ -139,20 +143,19 @@ public class UserService {
     }
 
     @Transactional
-public void changePassword(PasswordChangeDTO passwordChangeDTO) {
-    Optional<User> userOptional = userMapper.findByUserId(passwordChangeDTO.getUserId());
-    if (userOptional.isPresent()) {
-        if (!passwordChangeDTO.getPassword().equals(passwordChangeDTO.getConfirmPassword())) {
-            throw new IllegalArgumentException("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+    public void changePassword(PasswordChangeDTO passwordChangeDTO) {
+        Optional<User> userOptional = userMapper.findByUserId(passwordChangeDTO.getUserId());
+        if (userOptional.isPresent()) {
+            if (!passwordChangeDTO.getPassword().equals(passwordChangeDTO.getConfirmPassword())) {
+                throw new IllegalArgumentException("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+            }
+
+            String encodedPassword = passwordEncoder.encode(passwordChangeDTO.getPassword());
+            userMapper.updatePassword(passwordChangeDTO.getUserId(), encodedPassword);
+        } else {
+            throw new IllegalArgumentException("존재하지 않는 사용자입니다.");
         }
-
-        String encodedPassword = passwordEncoder.encode(passwordChangeDTO.getPassword());
-        userMapper.updatePassword(passwordChangeDTO.getUserId(), encodedPassword);
-    } else {
-        throw new IllegalArgumentException("존재하지 않는 사용자입니다.");
     }
-}
-
 
     @Transactional
     public void changeNickname(NicknameChangeDTO nicknameChangeDTO) {
