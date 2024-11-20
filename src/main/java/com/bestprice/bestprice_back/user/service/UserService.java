@@ -4,6 +4,7 @@ import com.bestprice.bestprice_back.user.dao.UserMapper;
 import com.bestprice.bestprice_back.user.domain.User;
 import com.bestprice.bestprice_back.user.dto.EmailVerificationDTO;
 import com.bestprice.bestprice_back.user.dto.NicknameChangeDTO;
+import com.bestprice.bestprice_back.user.dto.PasswordChangeDTO;
 import com.bestprice.bestprice_back.user.dto.UserRegisterDTO;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
@@ -138,16 +139,20 @@ public class UserService {
     }
 
     @Transactional
-    public void changePassword(UserRegisterDTO userRegisterDTO) {
-        Optional<User> userOptional = userMapper.findByResetToken(userRegisterDTO.getToken());
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-            String encodedPassword = passwordEncoder.encode(userRegisterDTO.getPassword());
-            userMapper.updatePassword(user.getUserId(), encodedPassword);
-        } else {
-            throw new IllegalArgumentException("유효하지 않은 토큰입니다.");
+public void changePassword(PasswordChangeDTO passwordChangeDTO) {
+    Optional<User> userOptional = userMapper.findByUserId(passwordChangeDTO.getUserId());
+    if (userOptional.isPresent()) {
+        if (!passwordChangeDTO.getPassword().equals(passwordChangeDTO.getConfirmPassword())) {
+            throw new IllegalArgumentException("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
         }
+
+        String encodedPassword = passwordEncoder.encode(passwordChangeDTO.getPassword());
+        userMapper.updatePassword(passwordChangeDTO.getUserId(), encodedPassword);
+    } else {
+        throw new IllegalArgumentException("존재하지 않는 사용자입니다.");
     }
+}
+
 
     @Transactional
     public void changeNickname(NicknameChangeDTO nicknameChangeDTO) {

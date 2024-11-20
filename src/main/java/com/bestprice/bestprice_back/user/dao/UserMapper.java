@@ -33,4 +33,5 @@ public interface UserMapper {
     Optional<User> findByResetToken(String token); // 토큰으로 사용자 조회
 
     void updateNickname(NicknameChangeDTO nicknameChangeDTO); // 닉네임 업데이트
+
 }

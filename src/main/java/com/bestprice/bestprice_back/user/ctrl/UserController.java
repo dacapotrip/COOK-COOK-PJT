@@ -6,6 +6,7 @@ import com.bestprice.bestprice_back.user.dto.EmailVerificationDTO;
 import com.bestprice.bestprice_back.user.dto.LoginRequestDTO;
 import com.bestprice.bestprice_back.user.dto.LoginResponseDTO;
 import com.bestprice.bestprice_back.user.dto.NicknameChangeDTO;
+import com.bestprice.bestprice_back.user.dto.PasswordChangeDTO;
 import com.bestprice.bestprice_back.user.dto.UserRegisterDTO;
 import com.bestprice.bestprice_back.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -166,16 +167,17 @@ public class UserController {
         }
     }
 
-    @Operation(summary = "새 비밀번호로 변경", description = "새 비밀번호를 설정합니다.")
-    @PostMapping("/password/change")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "비밀번호 변경 완료"),
-            @ApiResponse(responseCode = "400", description = "유효하지 않은 요청")
-    })
-    public ResponseEntity<String> changePassword(@Valid @RequestBody UserRegisterDTO userRegisterDTO) {
-        userService.changePassword(userRegisterDTO);
-        return ResponseEntity.ok("비밀번호가 변경되었습니다.");
-    }
+    @Operation(summary = "비밀번호 변경", description = "기존 사용자의 비밀번호를 변경합니다.")
+@PatchMapping("/password")
+@ApiResponses({
+    @ApiResponse(responseCode = "200", description = "비밀번호 변경 완료"),
+    @ApiResponse(responseCode = "400", description = "유효하지 않은 요청")
+})
+public ResponseEntity<String> updatePassword(@Valid @RequestBody PasswordChangeDTO passwordChangeDTO) {
+    userService.changePassword(passwordChangeDTO);
+    return ResponseEntity.ok("비밀번호가 성공적으로 변경되었습니다.");
+}
+
 
     @Operation(summary = "회원 탈퇴 요청", description = "회원 탈퇴를 요청합니다.")
     @DeleteMapping
