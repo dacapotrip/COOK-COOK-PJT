@@ -1,7 +1,6 @@
-package com.bestprice.bestprice_back.components.ctrl;
+package com.bestprice.bestprice_back.recipe;
 
 import com.bestprice.bestprice_back.components.domain.RecipeDto;
-import com.bestprice.bestprice_back.components.service.RecipeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,44 +14,78 @@ public class RecipeController {
     }
 
     // 조회수 증가 API
-    @PostMapping("/{recipeId}/view")
-    public ResponseEntity<Void> inqCNTCount(@PathVariable Long recipeId) {
-        recipeService.inqCNTCount(recipeId);
+    @PostMapping("/{rcpSno}/view")
+    public ResponseEntity<Void> inqCNTCount(@PathVariable Long rcpSno) {
+        recipeService.inqCNTCount(rcpSno);
         return ResponseEntity.ok().build();
     }
 
     // 추천하기
-    @PostMapping("/{recipeId}/recommend")
+    @PostMapping("/{rcpSno}/recommend")
     public ResponseEntity<Void> recommendRecipe(
-            @PathVariable Long recipeId,
+            @PathVariable Long rcpSno,
             @RequestParam String userId) {
-        recipeService.recommendRecipe(recipeId, userId);
+        recipeService.recommendRecipe(rcpSno, userId);
         return ResponseEntity.ok().build();
     }
 
     // 추천 취소
-    @DeleteMapping("/{recipeId}/recommend")
+    @DeleteMapping("/{rcpSno}/recommend")
     public ResponseEntity<Void> cancelRecommendation(
-            @PathVariable Long recipeId,
+            @PathVariable Long rcpSno,
             @RequestParam String userId) {
-        recipeService.cancelRecommendation(recipeId, userId);
+        recipeService.cancelRecommendation(rcpSno, userId);
         return ResponseEntity.ok().build();
     }
 
     // 추천 여부 확인
-    @GetMapping("/{recipeId}/recommend")
+    @GetMapping("/{rcpSno}/recommend")
     public ResponseEntity<Boolean> checkRecommendation(
-            @PathVariable Long recipeId,
+            @PathVariable Long rcpSno,
             @RequestParam String userId) {
-        boolean isRecommended = recipeService.checkRecommendation(recipeId, userId);
+        boolean isRecommended = recipeService.checkRecommendation(rcpSno, userId);
         return ResponseEntity.ok(isRecommended);
     }
 
     // 레시피 조회
-    @GetMapping("/{rcp_sno}")
-    public ResponseEntity<RecipeDto> getRecipeBySno(@PathVariable Long rcp_sno) {
-        RecipeDto recipe = recipeService.getRecipeBySno(rcp_sno);
+    @GetMapping("/{rcpSno}")
+    public ResponseEntity<RecipeDto> getRecipeBySno(@PathVariable Long rcpSno) {
+        RecipeDto recipe = recipeService.getRecipeBySno(rcpSno);
         return ResponseEntity.ok(recipe);
     }
 
+    @PostMapping("/{rcpSno}/bookmark")
+    public ResponseEntity<Boolean> toggleBookmark(
+            @PathVariable Long rcpSno,
+            @RequestParam String userId) {
+        if (userId == null || userId.isEmpty()) {
+            return ResponseEntity.badRequest().body(null);
+        }
+
+        boolean isBookmarked = recipeService.toggleBookmark(userId, rcpSno);
+        return ResponseEntity.ok(isBookmarked);
+    }
+
+    @GetMapping("/{rcpSno}/bookmark")
+    public ResponseEntity<Boolean> isBookmarked(
+            @PathVariable Long rcpSno,
+            @RequestParam String userId) {
+        if (userId == null || userId.isEmpty()) {
+            return ResponseEntity.badRequest().body(null);
+        }
+
+        boolean isBookmarked = recipeService.isBookmarked(userId, rcpSno);
+        return ResponseEntity.ok(isBookmarked);
+    }
+
+    @DeleteMapping("/{rcpSno}/bookmark")
+    public ResponseEntity<Void> removeBookmark(
+            @PathVariable Long rcpSno,
+            @RequestParam String userId) {
+        if (userId == null || userId.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        recipeService.toggleBookmark(userId, rcpSno);
+        return ResponseEntity.ok().build();
+    }
 }

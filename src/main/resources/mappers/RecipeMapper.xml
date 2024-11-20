@@ -2,16 +2,16 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 
-<mapper namespace="com.bestprice.bestprice_back.components.dao.RecipeMapper">
+<mapper namespace="com.bestprice.bestprice_back.recipe.RecipeMapper">
 
     <!-- ID로 레시피 조회 -->
     <select id="findById" parameterType="long" resultType="com.bestprice.bestprice_back.components.domain.RecipeDto">
-        SELECT * FROM recipe WHERE rcp_SNO = #{id}
+        SELECT * FROM recipe WHERE rcp_SNO = #{rcp_sno}
     </select>
 
     <!-- 조회수 증가 -->
     <update id="inqCNTCount" parameterType="long">
-        UPDATE recipe SET inq_CNT = inq_CNT + 1 WHERE rcp_SNO = #{id}
+        UPDATE recipe SET inq_CNT = inq_CNT + 1 WHERE rcp_SNO = #{rcp_sno}
     </update>
 
     <!-- 레시피 ID로 조회 -->

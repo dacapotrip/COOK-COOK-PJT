@@ -2,39 +2,39 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 
-<mapper namespace="com.bestprice.bestprice_back.components.dao.RecommendationMapper">
+<mapper namespace="com.bestprice.bestprice_back.recipe.RecommendationMapper">
 
     <!-- 추천 여부 확인 -->
-    <select id="existsByUserIdAndRecipeId" resultType="int">
+    <select id="existsByUserIdAndrcpsno" resultType="int">
         SELECT COUNT(*) 
         FROM recommendation
-        WHERE user_id = #{userId} AND recipe_id = #{recipeId}
+        WHERE user_id = #{userId} AND rcp_sno = #{rcp_sno}
     </select>
 
     <!-- 추천 기록 추가 -->
     <insert id="insertRecommendation">
-        INSERT INTO recommendation (user_id, recipe_id)
-        VALUES (#{userId}, #{recipeId})
+        INSERT INTO recommendation (user_id, rcp_sno)
+        VALUES (#{userId}, #{rcp_sno})
     </insert>
 
     <!-- 추천 기록 삭제 -->
     <delete id="deleteRecommendation">
         DELETE FROM recommendation
-        WHERE user_id = #{userId} AND recipe_id = #{recipeId}
+        WHERE user_id = #{userId} AND rcp_sno = #{rcp_sno}
     </delete>
 
     <!-- 추천수 증가 -->
     <update id="incrementRecommendCount">
         UPDATE recipe
         SET RCMM_CNT = RCMM_CNT + 1
-        WHERE RCP_SNO = #{recipeId}
+        WHERE RCP_SNO = #{rcp_sno}
     </update>
 
     <!-- 추천수 감소 -->
     <update id="decrementRecommendCount">
         UPDATE recipe
         SET RCMM_CNT = RCMM_CNT - 1
-        WHERE RCP_SNO = #{recipeId}
+        WHERE RCP_SNO = #{rcp_sno}
     </update>
 
 </mapper>
