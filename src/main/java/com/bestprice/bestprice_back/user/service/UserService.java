@@ -98,16 +98,6 @@ public class UserService {
     }
 
     @Transactional
-    public void logout(String userId) {
-        try {
-            System.out.println("로그아웃 중: " + userId);
-        } catch (Exception e) {
-            System.err.println("로그아웃 도중 에러가 발생했습니다. " + userId + ": " + e.getMessage());
-            throw new RuntimeException("로그아웃에 실패했습니다.");
-        }
-    }
-
-    @Transactional
     public void passwordResetRequest(String email) {
         Optional<User> userOptional = userMapper.findByEmail(email);
         if (userOptional.isPresent()) {
@@ -169,12 +159,11 @@ public class UserService {
     }
 
     @Transactional
-    public void deleteUser(String userId, String password) {
-        Optional<User> userOptional = userMapper.findByUserId(userId);
-        if (userOptional.isPresent() && passwordEncoder.matches(password, userOptional.get().getPassword())) {
+    public void deleteUser(String userId) {
+        if (userMapper.findByUserId(userId).isPresent()) {
             userMapper.deleteUser(userId);
         } else {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않거나 사용자가 존재하지 않습니다.");
+            throw new IllegalArgumentException("사용자가 존재하지 않습니다.");
         }
     }
 }
