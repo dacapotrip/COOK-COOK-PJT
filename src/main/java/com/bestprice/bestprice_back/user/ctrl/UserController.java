@@ -5,7 +5,10 @@ import com.bestprice.bestprice_back.user.domain.User;
 import com.bestprice.bestprice_back.user.dto.EmailVerificationDTO;
 import com.bestprice.bestprice_back.user.dto.LoginRequestDTO;
 import com.bestprice.bestprice_back.user.dto.LoginResponseDTO;
+import com.bestprice.bestprice_back.user.dto.NicknameChangeDTO;
+import com.bestprice.bestprice_back.user.dto.PasswordChangeDTO;
 import com.bestprice.bestprice_back.user.dto.UserRegisterDTO;
+import com.bestprice.bestprice_back.user.dto.UserSignOutDTO;
 import com.bestprice.bestprice_back.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -14,6 +17,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -93,7 +97,6 @@ public class UserController {
 
             // JWT 생성
             String accessToken = JwtTokenUtil.createAccessToken(user.getUserId(), 3600000); // 1시간
-            String refreshToken = JwtTokenUtil.createRefreshToken(user.getUserId(), 86400000); // 24시간
 
             // 응답 DTO 설정
             LoginResponseDTO response = new LoginResponseDTO();
@@ -102,39 +105,11 @@ public class UserController {
             response.setNickname(user.getNickname());
             response.setEmail(user.getEmail());
             response.setAccessToken(accessToken);
-            response.setRefreshToken(refreshToken);
 
             return ResponseEntity.ok(response);
         } else {
             System.err.println("Login failed for userId: " + userId);
             return ResponseEntity.status(401).body(null); // Unauthorized
-        }
-    }
-
-    @Operation(summary = "로그아웃", description = "사용자를 로그아웃합니다.")
-    @PostMapping("/logout")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "로그아웃 성공"),
-            @ApiResponse(responseCode = "400", description = "로그아웃 실패")
-    })
-    public ResponseEntity<String> logout(@RequestHeader("Authorization") String authorizationHeader) {
-
-        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            return ResponseEntity.badRequest().body("로그아웃 실패: 유효하지 않은 Authorization 헤더입니다.");
-        }
-
-        // "Bearer " 접두사를 제거하고 공백 제거
-        String token = authorizationHeader.substring(7).trim();
-
-        try {
-            // JWT에서 사용자 ID 추출
-            String userId = JwtTokenUtil.getUserId(token);
-
-            // userService.logout에서 String 타입 userId 처리
-            userService.logout(userId);
-            return ResponseEntity.ok("로그아웃이 완료되었습니다.");
-        } catch (JwtTokenUtil.TokenValidationException e) {
-            return ResponseEntity.badRequest().body("로그아웃 실패: " + e.getMessage());
         }
     }
 
@@ -150,25 +125,40 @@ public class UserController {
         return ResponseEntity.status(201).body(email + " 메일함을 확인하여 비밀번호 초기화 진행해주세요.");
     }
 
-    @Operation(summary = "새 비밀번호로 변경", description = "새 비밀번호를 설정합니다.")
-    @PostMapping("/password/change")
+    @Operation(summary = "닉네임 변경", description = "사용자의 닉네임을 변경합니다.")
+    @PatchMapping("/nickname")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "닉네임 변경 성공"),
+            @ApiResponse(responseCode = "400", description = "유효하지 않은 요청")
+    })
+    public ResponseEntity<String> changeNickname(@Valid @RequestBody NicknameChangeDTO nicknameChangeDTO) {
+        try {
+            userService.changeNickname(nicknameChangeDTO);
+            return ResponseEntity.ok("닉네임이 성공적으로 변경되었습니다.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(400).body("닉네임 변경에 실패하였습니다. " + e.getMessage());
+        }
+    }
+
+    @Operation(summary = "비밀번호 변경", description = "기존 사용자의 비밀번호를 변경합니다.")
+    @PatchMapping("/password")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "비밀번호 변경 완료"),
             @ApiResponse(responseCode = "400", description = "유효하지 않은 요청")
     })
-    public ResponseEntity<String> changePassword(@Valid @RequestBody UserRegisterDTO userRegisterDTO) {
-        userService.changePassword(userRegisterDTO);
-        return ResponseEntity.ok("비밀번호가 변경되었습니다.");
+    public ResponseEntity<String> updatePassword(@Valid @RequestBody PasswordChangeDTO passwordChangeDTO) {
+        userService.changePassword(passwordChangeDTO);
+        return ResponseEntity.ok("비밀번호가 성공적으로 변경되었습니다.");
     }
 
     @Operation(summary = "회원 탈퇴 요청", description = "회원 탈퇴를 요청합니다.")
     @DeleteMapping
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "회원 탈퇴 성공"),
-            @ApiResponse(responseCode = "400", description = "비밀번호 불일치 시")
+            @ApiResponse(responseCode = "400", description = "유효하지 않은 요청")
     })
-    public ResponseEntity<String> deleteUser(@Valid @RequestBody UserRegisterDTO userRegisterDTO) {
-        userService.deleteUser(userRegisterDTO.getUserId(), userRegisterDTO.getPassword());
+    public ResponseEntity<String> deleteUser(@Valid @RequestBody UserSignOutDTO userSignOutDTO) {
+        userService.deleteUser(userSignOutDTO.getUserId());
         return ResponseEntity.ok("회원 탈퇴가 완료되었습니다.");
     }
 }

@@ -19,9 +19,7 @@
     <resultMap id="UserResultMap" type="com.bestprice.bestprice_back.user.domain.User">
         <result property="userId" column="user_id"/>
         <result property="password" column="password"/>
-        <!-- 추가적인 필드 매핑이 필요하면 여기에 작성 -->
     </resultMap>
-
 
     <!-- findByToken --> 
     <select id="findByToken"
@@ -55,10 +53,10 @@
         UPDATE user SET password = #{password} WHERE user_id = #{userId}
     </update>
 
-    <!-- clearResetToken --> 
-    <update id="clearResetToken"
-            parameterType="String">
-        UPDATE user SET token = NULL WHERE user_id = #{userId}
+    <!-- updateNickname --> 
+    <update id="updateNickname"
+            parameterType="com.bestprice.bestprice_back.user.dto.NicknameChangeDTO">
+        UPDATE user SET nickname = #{newNickname} WHERE user_id = #{userId}
     </update>
 
     <!-- deleteUser --> 
@@ -67,11 +65,5 @@
         DELETE FROM user WHERE user_id = #{userId}
     </delete>
 
-    <!-- findByResetToken --> 
-    <select id="findByResetToken"
-            parameterType="String" 
-            resultType="com.bestprice.bestprice_back.user.domain.User">
-        SELECT * FROM user WHERE token = #{token}
-    </select>
-
+    
 </mapper>
