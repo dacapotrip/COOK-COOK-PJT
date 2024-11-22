@@ -14,6 +14,13 @@
         UPDATE recipe SET inq_CNT = inq_CNT + 1 WHERE rcp_SNO = #{rcp_sno}
     </update>
 
+    <!-- 주간 조회수 증가-->
+    <update id="incrementWeeklyViewsCount">
+        UPDATE recipe
+        SET WEEKLY_VIEWS =  WEEKLY_VIEWS + 1
+        WHERE RCP_SNO = #{rcp_sno}
+    </update>
+
     <!-- 레시피 ID로 조회 -->
     <select id="getRecipeBySno" parameterType="long" resultType="com.bestprice.bestprice_back.components.domain.RecipeDto">
         SELECT * FROM recipe WHERE rcp_SNO = #{rcp_sno}

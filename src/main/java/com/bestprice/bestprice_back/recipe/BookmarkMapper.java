@@ -13,4 +13,9 @@ public interface BookmarkMapper {
     void deleteBookmark(@Param("userId") String userId, @Param("rcp_sno") Long rcp_sno);
 
     List<Long> findRecipesByUserId(@Param("userId") String userId);
+
+    void incrementWeeklyFavoritesCount(@Param("rcp_sno") Long rcp_sno);
+
+    void decrementWeeklyFavoritesCount(@Param("rcp_sno") Long rcp_sno);
+
 }

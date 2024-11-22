@@ -32,6 +32,7 @@ public class RecipeService {
     // 조회수 증가
     public void inqCNTCount(Long rcpSno) {
         recipeMapper.inqCNTCount(rcpSno);
+        recipeMapper.incrementWeeklyViewsCount(rcpSno);
     }
 
     // 추천 여부 확인
@@ -47,6 +48,7 @@ public class RecipeService {
         }
         recommendationMapper.insertRecommendation(userId, rcpSno);
         recommendationMapper.incrementRecommendCount(rcpSno);
+        recommendationMapper.incrementWeeklyRecommendCount(rcpSno);
     }
 
     // 추천 취소
@@ -57,6 +59,7 @@ public class RecipeService {
         }
         recommendationMapper.deleteRecommendation(userId, rcpSno);
         recommendationMapper.decrementRecommendCount(rcpSno);
+        recommendationMapper.decrementWeeklyRecommendCount(rcpSno);
     }
 
     // ID로 레시피 조회
@@ -76,9 +79,11 @@ public class RecipeService {
 
         if (existingBookmark != null) {
             bookmarkMapper.deleteBookmark(userId, rcpSno);
+            bookmarkMapper.decrementWeeklyFavoritesCount(rcpSno);
             return false; // 북마크 삭제 후 false 반환
         } else {
             bookmarkMapper.insertBookmark(userId, rcpSno);
+            bookmarkMapper.incrementWeeklyFavoritesCount(rcpSno);
             return true; // 북마크 추가 후 true 반환
         }
     }

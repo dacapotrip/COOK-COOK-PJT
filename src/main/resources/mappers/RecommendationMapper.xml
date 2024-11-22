@@ -37,4 +37,20 @@
         WHERE RCP_SNO = #{rcp_sno}
     </update>
 
+    
+    <!-- 주간 추천수 증가-->
+    <update id="incrementWeeklyRecommendCount">
+        UPDATE recipe
+        SET WEEKLY_RECOMMENDATIONS =  WEEKLY_RECOMMENDATIONS + 1
+        WHERE RCP_SNO = #{rcp_sno}
+    </update>
+
+
+    <!-- 주간 추천수 감소-->
+    <update id="decrementWeeklyRecommendCount">
+        UPDATE recipe
+        SET WEEKLY_RECOMMENDATIONS =  WEEKLY_RECOMMENDATIONS - 1
+        WHERE RCP_SNO = #{rcp_sno}
+    </update>
+
 </mapper>
