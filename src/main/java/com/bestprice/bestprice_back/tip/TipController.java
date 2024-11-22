@@ -1,6 +1,5 @@
 package com.bestprice.bestprice_back.tip;
 
-import org.apache.ibatis.annotations.Select;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,27 +18,21 @@ public class TipController {
         return tipService.getAllTips();
     }
 
-    // 특정 팁 가져오기
-    @GetMapping("/{tipId}")
-    public TipDto getTipById(@PathVariable int tipId) {
-        return tipService.getTipById(tipId);
-    }
-
     // 사용자의 좋아요 목록 가져오기
     @GetMapping("/likes")
-    public List<Integer> getUserLikes(@RequestParam("userId") String userId) {
-        return tipService.getUserLikes(userId);
+    public List<Integer> getUserRecommendations(@RequestParam("userId") String userId) {
+        return tipService.getUserRecommendations(userId);
     }
 
     // 좋아요 추가
     @PostMapping("/like")
-    public void addLike(@RequestParam("userId") String userId, @RequestParam("tipId") int tipId) {
-        tipService.addLike(userId, tipId);
+    public void addRecommendation(@RequestParam("userId") String userId, @RequestParam("tipId") int tipId) {
+        tipService.addRecommendation(userId, tipId);
     }
 
     // 좋아요 삭제
     @DeleteMapping("/like")
-    public void removeLike(@RequestParam("userId") String userId, @RequestParam("tipId") int tipId) {
-        tipService.removeLike(userId, tipId);
+    public void removeRecommendation(@RequestParam("userId") String userId, @RequestParam("tipId") int tipId) {
+        tipService.removeRecommendation(userId, tipId);
     }
 }

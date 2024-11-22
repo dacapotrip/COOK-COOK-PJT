@@ -18,15 +18,17 @@ public class TipService {
         return tipMapper.getTipById(tipId);
     }
 
-    public void addLike(String userId, int tipId) {
-        tipMapper.addLike(userId, tipId);
+    public void addRecommendation(String userId, int tipId) {
+        tipMapper.addRecommendation(userId, tipId);
+        tipMapper.incrementRecommendation(tipId);
     }
 
-    public void removeLike(String userId, int tipId) {
-        tipMapper.removeLike(userId, tipId);
+    public void removeRecommendation(String userId, int tipId) {
+        tipMapper.removeRecommendation(userId, tipId);
+        tipMapper.decrementRecommendation(tipId);
     }
 
-    public List<Integer> getUserLikes(String userId) {
-        return tipMapper.getUserLikes(userId);
+    public List<Integer> getUserRecommendations(String userId) {
+        return tipMapper.getUserRecommendations(userId);
     }
 }
