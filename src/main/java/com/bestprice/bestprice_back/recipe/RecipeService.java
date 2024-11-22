@@ -1,15 +1,24 @@
 package com.bestprice.bestprice_back.recipe;
 
 import com.bestprice.bestprice_back.components.domain.RecipeDto;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
 
 @Service
 public class RecipeService {
 
+    @Autowired
     private final RecipeMapper recipeMapper;
     private final RecommendationMapper recommendationMapper;
     private final BookmarkMapper bookmarkMapper;
+
+    // user_id로 recipe_id 목록 가져오기
+    public List<Long> getRecipesByUserId(String userId) {
+        return bookmarkMapper.findRecipesByUserId(userId);
+    }
 
     // 생성자에서 의존성 주입
     public RecipeService(RecipeMapper recipeMapper,

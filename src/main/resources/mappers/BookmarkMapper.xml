@@ -23,4 +23,11 @@
         WHERE user_id = #{userId} 
           AND rcp_sno = #{rcp_sno}
     </delete>
+
+    <!-- user_id로 검색-->
+    <select id="findRecipesByUserId" parameterType="string" resultType="long">
+        SELECT rcp_sno
+        FROM bookmark
+        WHERE user_id = #{userId}
+    </select>
 </mapper>

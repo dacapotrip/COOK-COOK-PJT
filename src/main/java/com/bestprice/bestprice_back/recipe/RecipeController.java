@@ -2,6 +2,7 @@ package com.bestprice.bestprice_back.recipe;
 
 import com.bestprice.bestprice_back.components.domain.RecipeDto;
 import org.springframework.http.ResponseEntity;
+import java.util.List;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -87,5 +88,10 @@ public class RecipeController {
         }
         recipeService.toggleBookmark(userId, rcpSno);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/bookmarks")
+    public List<Long> getBookmarksByUserId(@RequestParam String userId) {
+        return recipeService.getRecipesByUserId(userId);
     }
 }
