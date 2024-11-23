@@ -94,9 +94,7 @@ public class RecipeController {
 
     @GetMapping("/search")
     public ResponseEntity<List<RecipeDto>> getRecipesByIngredient(@RequestParam List<String> ingredients) {
-        System.out.println("Received ingredients: " + ingredients); // 로그 출력
-    
-        // 서비스 호출
+        System.out.println("Received ingredients: " + ingredients);
         List<RecipeDto> recipes = recipeService.findRecipesByIngredients(ingredients);
         return ResponseEntity.ok(recipes);
     }

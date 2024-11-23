@@ -28,4 +28,12 @@
         LIMIT 1;
     </select>
 
+    <!-- 정확히 일치하는 검색 -->
+    <select id="findRecipesByExactIngredient" parameterType="string" resultType="com.bestprice.bestprice_back.components.domain.RecipeDto">
+        SELECT * 
+        FROM recipe
+        WHERE FIND_IN_SET(#{ingredient}, CKG_MTRL_CN)
+        LIMIT 1;
+    </select>
+
 </mapper>

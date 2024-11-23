@@ -16,4 +16,6 @@ public interface RecipeMapper {
     RecipeDto getRecipeBySno(@Param("rcp_sno") Long rcpSno);
 
     List<RecipeDto> findRecipesByIngredient(@Param("ingredient") String ingredient);
+
+    List<RecipeDto> findRecipesByExactIngredient(@Param("ingredient") String ingredient);
 }
