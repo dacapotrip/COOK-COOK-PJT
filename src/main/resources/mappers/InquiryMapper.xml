@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bestprice.bestprice_back.inquiry.dao.InquiryMapper">
+
+    <!-- 문의 목록 가져오기 -->
+    <select id="getInquiries" resultType="com.bestprice.bestprice_back.inquiry.dto.InquiryDTO">
+        SELECT 
+            inquiry_id AS inquiryId,
+            inquiry_title AS inquiryTitle,
+            inquiry,
+            inquiry_date AS inquiryDate,
+            inquiry_type AS inquiryType,
+            secret,
+            user_id AS userId
+        FROM inquiry
+        ORDER BY inquiry_id DESC
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <!-- 총 문의 수 가져오기 -->
+    <select id="getInquiryCount" resultType="int">
+        SELECT COUNT(*) FROM inquiry
+    </select>
+
+    <!-- 특정 문의 가져오기 -->
+    <select id="getInquiryById" resultType="com.bestprice.bestprice_back.inquiry.dto.InquiryDTO">
+        SELECT 
+            inquiry_id AS inquiryId,
+            inquiry_title AS inquiryTitle,
+            inquiry AS inquiry,
+            inquiry_date AS inquiryDate,
+            inquiry_type AS inquiryType,
+            secret AS secret,
+            user_id AS userId
+        FROM inquiry
+        WHERE inquiry_id = #{id}
+    </select>
+
+    <!-- 새로운 문의 등록 -->
+    <insert id="createInquiry">
+        INSERT INTO inquiry (inquiry_title, inquiry, inquiry_date, inquiry_type, secret, user_id)
+        VALUES (#{inquiryTitle}, #{inquiry}, NOW(), #{inquiryType}, #{secret}, #{userId})
+    </insert>
+
+    <!-- 특정 문의 삭제 -->
+    <delete id="deleteInquiry">
+        DELETE FROM inquiry
+        WHERE inquiry_id = #{id}
+    </delete>
+
+</mapper>
