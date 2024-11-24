@@ -105,6 +105,8 @@ public class UserController {
             response.setNickname(user.getNickname());
             response.setEmail(user.getEmail());
             response.setAccessToken(accessToken);
+            response.setRole(user.getRole());
+            response.setVerified(user.isVerified());
 
             return ResponseEntity.ok(response);
         } else {
