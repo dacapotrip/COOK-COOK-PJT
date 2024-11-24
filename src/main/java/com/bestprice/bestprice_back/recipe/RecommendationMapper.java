@@ -15,4 +15,8 @@ public interface RecommendationMapper {
     void incrementRecommendCount(@Param("rcp_sno") Long rcp_sno);
 
     void decrementRecommendCount(@Param("rcp_sno") Long rcp_sno);
+
+    void incrementWeeklyRecommendCount(@Param("rcp_sno") Long rcp_sno);
+
+    void decrementWeeklyRecommendCount(@Param("rcp_sno") Long rcp_sno);
 }

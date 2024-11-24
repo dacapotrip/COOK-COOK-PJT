@@ -23,4 +23,25 @@
         WHERE user_id = #{userId} 
           AND rcp_sno = #{rcp_sno}
     </delete>
+
+    <!-- 주간 찜 증가-->
+    <update id="incrementWeeklyFavoritesCount">
+        UPDATE recipe
+        SET WEEKLY_FAVORITES =  WEEKLY_FAVORITES + 1
+        WHERE RCP_SNO = #{rcp_sno}
+    </update>
+
+    <!-- 주간 찜 감소-->
+    <update id="decrementWeeklyFavoritesCount">
+        UPDATE recipe
+        SET WEEKLY_FAVORITES = WEEKLY_FAVORITES - 1
+        WHERE RCP_SNO = #{rcp_sno}
+    </update>
+
+    <!-- user_id로 검색-->
+    <select id="findRecipesByUserId" parameterType="string" resultType="long">
+        SELECT rcp_sno
+        FROM bookmark
+        WHERE user_id = #{userId}
+    </select>
 </mapper>

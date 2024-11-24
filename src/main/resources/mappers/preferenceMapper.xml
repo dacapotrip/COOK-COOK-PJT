@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bestprice.bestprice_back.preference.dao.PreferenceMapper">
+
+    <!-- Insert preference -->
+    <insert id="insertPreference" parameterType="com.bestprice.bestprice_back.preference.dto.PreferenceDTO">
+        INSERT INTO preference (user_id, CKG_DODF_NM, CKG_INBUN_NM, CKG_KND_ACTO_NM, CKG_MTH_ACTO_NM)
+        VALUES (#{userId}, #{CKG_DODF_NM}, #{CKG_INBUN_NM}, #{CKG_KND_ACTO_NM}, #{CKG_MTH_ACTO_NM})
+    </insert>
+
+    <!-- Update preference -->
+    <update id="updatePreference" parameterType="com.bestprice.bestprice_back.preference.dto.PreferenceDTO">
+        UPDATE preference
+        SET CKG_DODF_NM = #{CKG_DODF_NM},
+            CKG_INBUN_NM = #{CKG_INBUN_NM},
+            CKG_KND_ACTO_NM = #{CKG_KND_ACTO_NM},
+            CKG_MTH_ACTO_NM = #{CKG_MTH_ACTO_NM}
+        WHERE user_id = #{userId}
+    </update>
+
+    <!-- Select preference by user ID -->
+    <select id="findPreferenceByUserId" parameterType="String" resultType="com.bestprice.bestprice_back.preference.domain.Preference">
+        SELECT * FROM preference WHERE user_id = #{userId}
+    </select>
+
+    <!-- Delete preference -->
+    <delete id="deletePreference" parameterType="String">
+        DELETE FROM preference WHERE user_id = #{userId}
+    </delete>
+
+</mapper>

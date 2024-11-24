@@ -13,6 +13,8 @@ public interface RecipeMapper {
 
     void inqCNTCount(@Param("rcp_sno") Long id);
 
+    void incrementWeeklyViewsCount(@Param("rcp_sno") Long id);
+
     RecipeDto getRecipeBySno(@Param("rcp_sno") Long rcpSno);
 
     List<RecipeDto> findRecipesByIngredient(@Param("ingredient") String ingredient);
