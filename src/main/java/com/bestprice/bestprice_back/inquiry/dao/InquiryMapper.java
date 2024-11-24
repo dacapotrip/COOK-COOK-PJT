@@ -23,4 +23,7 @@ public interface InquiryMapper {
 
     // 특정 문의 삭제
     void deleteInquiry(@Param("id") int id);
+
+    // 문의 답변 업데이트
+    void updateInquiryAnswer(@Param("id") int id, @Param("answer") String answer);
 }

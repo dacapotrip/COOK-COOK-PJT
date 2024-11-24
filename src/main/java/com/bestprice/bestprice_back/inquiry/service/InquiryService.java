@@ -45,5 +45,13 @@ public class InquiryService {
     public void deleteInquiry(int id) {
         inquiryMapper.deleteInquiry(id);
     }
-}
 
+    // 문의 답변 등록
+    public void submitAnswer(int inquiryId, String answer) {
+        InquiryDTO inquiry = inquiryMapper.getInquiryById(inquiryId);
+        if (inquiry == null) {
+            throw new IllegalArgumentException("해당 문의를 찾을 수 없습니다.");
+        }
+        inquiryMapper.updateInquiryAnswer(inquiryId, answer);
+    }
+}

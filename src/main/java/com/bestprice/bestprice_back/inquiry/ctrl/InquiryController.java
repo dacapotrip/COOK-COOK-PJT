@@ -37,4 +37,14 @@ public class InquiryController {
     public void deleteInquiry(@PathVariable int id) {
         inquiryService.deleteInquiry(id);
     }
+
+    // 문의 답변 등록
+    @PostMapping("/{id}/answer")
+    public void submitAnswer(@PathVariable int id, @RequestBody Map<String, String> request) {
+        String answer = request.get("answer");
+        if (answer == null || answer.trim().isEmpty()) {
+            throw new IllegalArgumentException("답변 내용이 비어 있습니다.");
+        }
+        inquiryService.submitAnswer(id, answer);
+    }
 }

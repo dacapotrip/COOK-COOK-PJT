@@ -12,5 +12,6 @@ public class InquiryDTO {
     private String inquiryType;  // inquiry_type
     private boolean secret;      // secret
     private String userId;       // user_id
+    private String answer;       //answer
 }
 
