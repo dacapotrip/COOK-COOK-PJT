@@ -19,6 +19,29 @@
         LIMIT #{offset}, #{limit}
     </select>
 
+    <!-- 특정 사용자 문의 가져오기 -->
+    <select id="getInquiriesByUserId" resultType="com.bestprice.bestprice_back.inquiry.dto.InquiryDTO">
+        SELECT 
+            inquiry_id AS inquiryId,
+            inquiry_title AS inquiryTitle,
+            inquiry,
+            inquiry_date AS inquiryDate,
+            inquiry_type AS inquiryType,
+            secret,
+            user_id AS userId,
+            answer
+        FROM inquiry
+        WHERE user_id = #{userId}
+        ORDER BY inquiry_id DESC
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <!-- 특정 사용자 문의 수 가져오기 -->
+    <select id="getInquiryCountByUserId" resultType="int">
+        SELECT COUNT(*) FROM inquiry WHERE user_id = #{userId}
+    </select>
+
+
     <!-- 총 문의 수 가져오기 -->
     <select id="getInquiryCount" resultType="int">
         SELECT COUNT(*) FROM inquiry

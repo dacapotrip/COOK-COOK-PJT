@@ -15,13 +15,29 @@ public class InquiryService {
     @Autowired
     private InquiryMapper inquiryMapper;
 
-    // 문의 목록 가져오기
+    // 전체 문의 가져오기
     public Map<String, Object> getInquiries(int page) {
         int itemsPerPage = 10; // 페이지당 항목 수
         int offset = (page - 1) * itemsPerPage;
 
         List<InquiryDTO> inquiries = inquiryMapper.getInquiries(offset, itemsPerPage);
         int totalItems = inquiryMapper.getInquiryCount();
+        int totalPages = (int) Math.ceil((double) totalItems / itemsPerPage);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("content", inquiries);
+        result.put("totalPages", totalPages);
+
+        return result;
+    }
+
+    // 특정 사용자 문의 가져오기
+    public Map<String, Object> getInquiriesByUserId(String userId, int page) {
+        int itemsPerPage = 10; // 페이지당 항목 수
+        int offset = (page - 1) * itemsPerPage;
+
+        List<InquiryDTO> inquiries = inquiryMapper.getInquiriesByUserId(userId, offset, itemsPerPage);
+        int totalItems = inquiryMapper.getInquiryCountByUserId(userId);
         int totalPages = (int) Math.ceil((double) totalItems / itemsPerPage);
 
         Map<String, Object> result = new HashMap<>();
