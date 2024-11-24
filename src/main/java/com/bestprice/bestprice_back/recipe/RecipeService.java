@@ -2,6 +2,11 @@ package com.bestprice.bestprice_back.recipe;
 
 import com.bestprice.bestprice_back.components.domain.RecipeDto;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -91,5 +96,28 @@ public class RecipeService {
     // 북마크 상태 확인
     public boolean isBookmarked(String userId, Long rcpSno) {
         return bookmarkMapper.findByUserIdAndRcpSno(userId, rcpSno) != null;
+    }
+
+    // 레시피 랜덤으로 가져오기
+    public List<RecipeDto> findRecipesByIngredients(List<String> ingredients) {
+        List<RecipeDto> result = new ArrayList<>();
+    
+    for (String ingredient : ingredients) {
+        // 정확히 일치하는 레시피 우선 검색
+        List<RecipeDto> exactMatches = recipeMapper.findRecipesByExactIngredient(ingredient);
+        if (!exactMatches.isEmpty()) {
+            result.add(exactMatches.get(0)); // 정확히 일치하면 추가
+            continue; // 다음 재료로 넘어감
+        }
+        
+        List<RecipeDto> recipes = recipeMapper.findRecipesByIngredient(ingredient);
+        if (!recipes.isEmpty()) {
+            // 랜덤으로 1개 선택
+            Collections.shuffle(recipes);
+            result.add(recipes.get(0));
+        }
+    }
+
+    return result;
     }
 }
