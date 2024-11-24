@@ -26,4 +26,21 @@
         SELECT * FROM recipe WHERE rcp_SNO = #{rcp_sno}
     </select>
 
+    <!-- 식재료에 있는 재료로 조회 -->
+    <select id="findRecipesByIngredient" parameterType="string" resultType="com.bestprice.bestprice_back.components.domain.RecipeDto">
+        SELECT * 
+        FROM recipe
+        WHERE CKG_MTRL_CN LIKE CONCAT('%', #{ingredient}, '%')
+        ORDER BY RAND() 
+        LIMIT 1;
+    </select>
+
+    <!-- 정확히 일치하는 검색 -->
+    <select id="findRecipesByExactIngredient" parameterType="string" resultType="com.bestprice.bestprice_back.components.domain.RecipeDto">
+        SELECT * 
+        FROM recipe
+        WHERE FIND_IN_SET(#{ingredient}, CKG_MTRL_CN)
+        LIMIT 1;
+    </select>
+
 </mapper>

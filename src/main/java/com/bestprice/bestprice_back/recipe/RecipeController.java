@@ -1,6 +1,9 @@
 package com.bestprice.bestprice_back.recipe;
 
 import com.bestprice.bestprice_back.components.domain.RecipeDto;
+
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import java.util.List;
 import org.springframework.web.bind.annotation.*;
@@ -94,4 +97,12 @@ public class RecipeController {
     public List<Long> getBookmarksByUserId(@RequestParam String userId) {
         return recipeService.getRecipesByUserId(userId);
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<RecipeDto>> getRecipesByIngredient(@RequestParam List<String> ingredients) {
+        System.out.println("Received ingredients: " + ingredients);
+        List<RecipeDto> recipes = recipeService.findRecipesByIngredients(ingredients);
+        return ResponseEntity.ok(recipes);
+    }
 }
+
