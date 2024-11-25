@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -87,6 +88,17 @@ public class WebCrawlerController {
         recipe = webCrawlerService.getRecipes(query);
 
         return recipe;
+    }
+
+    @GetMapping("/recipes")
+    public ResponseEntity<List<RecipeDto>> getFilteredRecipes(
+            @RequestParam(required = false) String difficulty,
+            @RequestParam(required = false) String portion,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) String method
+    ) {
+        List<RecipeDto> recipes = webCrawlerService.getFilteredRecipes(difficulty, portion, category, method);
+        return ResponseEntity.ok(recipes);
     }
 
     @GetMapping("/shop")
