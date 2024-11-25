@@ -18,22 +18,21 @@ public class RankService {
     public List<RankDTO> getTopInquiryRank() {
         List<RankDTO> ranks = rankMapper.getTopInqRank();
         System.out.println("Inquiry Rank Data: " + ranks);
-    
         return rankMapper.getTopInqRank();
     }
 
     public List<RankDTO> getTopRecommendationRank() {
         List<RankDTO> ranks = rankMapper.getTopRcmmRank();
         System.out.println("Recommendation Rank Data: " + ranks);
-    
         return rankMapper.getTopRcmmRank();
     }
 
-    public List<RankDTO> getTopScrapRank() {
-        List<RankDTO> ranks = rankMapper.getTopScrapRank();
-        System.out.println("Scrap Rank Data: " + ranks);
-    
-        return rankMapper.getTopScrapRank();
+    public List<RankDTO> getTopWeeklyViewsRank() {
+        return rankMapper.getTopWeeklyViewsRank();
+    }
+
+    public List<RankDTO> getTopWeeklyRecommendationsRank() {
+        return rankMapper.getTopWeeklyRecommendationsRank();
     }
     
 }

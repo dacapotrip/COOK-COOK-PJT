@@ -28,9 +28,14 @@ public class RankController {
         return rankService.getTopRecommendationRank();
     }
 
-    @GetMapping("/scrap")
-    public List<RankDTO> getTopScrapRank() {
-        return rankService.getTopScrapRank();
+    @GetMapping("/weekly_views")
+    public List<RankDTO> getTopWeeklyViewsRank() {
+        return rankService.getTopWeeklyViewsRank();
+    }
+
+    @GetMapping("/weekly_recommendations")
+    public List<RankDTO> getTopWeeklyRecommendationsRank() {
+        return rankService.getTopWeeklyRecommendationsRank();
     }
     
 }

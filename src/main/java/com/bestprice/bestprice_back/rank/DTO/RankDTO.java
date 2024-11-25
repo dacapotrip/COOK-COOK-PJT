@@ -10,5 +10,6 @@ public class RankDTO {
     private String rgtrNm;
     private int inqCnt;
     private int rcmmCnt;
-    private int srapCnt;
+    private int weeklyViews;
+    private int weeklyRecommendations;
 }

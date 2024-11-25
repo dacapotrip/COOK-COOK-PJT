@@ -14,5 +14,7 @@ public interface RankMapper {
 
     List<RankDTO> getTopRcmmRank();
 
-    List<RankDTO> getTopScrapRank();
+    List<RankDTO> getTopWeeklyViewsRank();
+    
+    List<RankDTO> getTopWeeklyRecommendationsRank();
 }

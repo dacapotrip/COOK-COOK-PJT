@@ -10,7 +10,8 @@
         <result property="rgtrNm" column="RGTR_NM"/>
         <result property="inqCnt" column="INQ_CNT"/>
         <result property="rcmmCnt" column="RCMM_CNT"/>
-        <result property="srapCnt" column="SRAP_CNT"/>
+        <result property="weeklyViews" column="WEEKLY_VIEWS"/>
+        <result property="weeklyRecommendations" column="WEEKLY_RECOMMENDATIONS"/>
     </resultMap>
 
     <!-- 조회수 랭킹 쿼리 -->
@@ -29,11 +30,19 @@
         LIMIT 10
     </select>
 
-    <!-- 스크랩수 랭킹 쿼리 -->
-    <select id="getTopScrapRank" resultMap="RankResultMap">
-        SELECT RCP_SNO, RCP_TTL, RGTR_NM, INQ_CNT, RCMM_CNT, SRAP_CNT
+    <!-- 주간 조회수 랭킹 쿼리 -->
+    <select id="getTopWeeklyViewsRank" resultMap="RankResultMap">
+        SELECT RCP_SNO, RCP_TTL, RGTR_NM, INQ_CNT, RCMM_CNT, WEEKLY_VIEWS, WEEKLY_RECOMMENDATIONS
         FROM recipe
-        ORDER BY SRAP_CNT DESC
+        ORDER BY WEEKLY_VIEWS DESC
+        LIMIT 10
+    </select>
+
+    <!-- 주간 추천수 랭킹 쿼리 -->
+    <select id="getTopWeeklyRecommendationsRank" resultMap="RankResultMap">
+        SELECT RCP_SNO, RCP_TTL, RGTR_NM, INQ_CNT, RCMM_CNT, WEEKLY_VIEWS, WEEKLY_RECOMMENDATIONS
+        FROM recipe
+        ORDER BY WEEKLY_RECOMMENDATIONS DESC
         LIMIT 10
     </select>
 
