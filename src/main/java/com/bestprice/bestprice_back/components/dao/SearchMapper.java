@@ -21,6 +21,13 @@ public interface SearchMapper {
 
     public List<RecipeDto> oneRecipe();
 
+    List<RecipeDto> filteredRecipes(
+        @Param("difficulty") String difficulty,
+        @Param("portion") String portion,
+        @Param("category") String category,
+        @Param("method") String method
+    );
+
     public void imageSet(Integer RCPNUM, String temp);
 
 }

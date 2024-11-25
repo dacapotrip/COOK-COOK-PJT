@@ -32,7 +32,7 @@
     <!-- allRecipes --> 
 
     <select id="allRecipes" resultType="com.bestprice.bestprice_back.components.domain.RecipeDto">
-        SELECT * FROM recipe limit 20;
+        SELECT * FROM recipe limit 500;
     </select>
 
     <!-- oneRecipe --> 
@@ -45,5 +45,19 @@
 
     <insert id="imageSet">
         UPDATE recipe SET image_url = #{temp} WHERE RCP_SNO = #{RCPNUM};
-    </insert>    
+    </insert>  
+
+    <select id="filteredRecipes" parameterType="java.lang.String" resultType="com.bestprice.bestprice_back.components.domain.RecipeDto">
+        SELECT * FROM recipe
+        ORDER BY
+            CASE
+                WHEN CKG_DODF_NM = #{difficulty} THEN 1
+                WHEN CKG_INBUN_NM = #{portion} THEN 2
+                WHEN CKG_KND_ACTO_NM = #{category} THEN 3
+                WHEN CKG_MTH_ACTO_NM = #{method} THEN 4
+                ELSE 5
+            END, RAND()
+        LIMIT 500;
+    </select>
+
     </mapper>

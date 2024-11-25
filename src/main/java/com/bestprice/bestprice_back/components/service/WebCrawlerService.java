@@ -100,6 +100,10 @@ public class WebCrawlerService {
         return list;
     }
 
+    public List<RecipeDto> getFilteredRecipes(String difficulty, String portion, String category, String method) {
+        return searchMapper.filteredRecipes(difficulty, portion, category, method);
+    }
+
     public List<RecipeDto> insertImg (){       
         
         List<RecipeDto> list = searchMapper.oneRecipe();
