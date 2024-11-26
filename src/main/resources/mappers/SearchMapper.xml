@@ -32,7 +32,7 @@
     <!-- allRecipes --> 
 
     <select id="allRecipes" resultType="com.bestprice.bestprice_back.components.domain.RecipeDto">
-        SELECT * FROM recipe limit 500;
+        SELECT * FROM recipe;
     </select>
 
     <!-- oneRecipe --> 
@@ -56,8 +56,6 @@
                 WHEN CKG_KND_ACTO_NM = #{category} THEN 3
                 WHEN CKG_MTH_ACTO_NM = #{method} THEN 4
                 ELSE 5
-            END, RAND()
-        LIMIT 500;
     </select>
 
     </mapper>
