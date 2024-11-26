@@ -12,11 +12,12 @@
         <result property="rcmmCnt" column="RCMM_CNT"/>
         <result property="weeklyViews" column="WEEKLY_VIEWS"/>
         <result property="weeklyRecommendations" column="WEEKLY_RECOMMENDATIONS"/>
+        <result property="imageUrl" column="IMAGE_URL"/>
     </resultMap>
 
     <!-- 조회수 랭킹 쿼리 -->
     <select id="getTopInqRank" resultMap="RankResultMap">
-        SELECT RCP_SNO, RCP_TTL, RGTR_NM, INQ_CNT, RCMM_CNT, SRAP_CNT
+        SELECT RCP_SNO, RCP_TTL, RGTR_NM, INQ_CNT, RCMM_CNT, SRAP_CNT, IMAGE_URL
         FROM recipe
         ORDER BY INQ_CNT DESC
         LIMIT 10
@@ -24,7 +25,7 @@
 
     <!-- 추천수 랭킹 쿼리 -->
     <select id="getTopRcmmRank" resultMap="RankResultMap">
-        SELECT RCP_SNO, RCP_TTL, RGTR_NM, INQ_CNT, RCMM_CNT, SRAP_CNT
+        SELECT RCP_SNO, RCP_TTL, RGTR_NM, INQ_CNT, RCMM_CNT, SRAP_CNT, IMAGE_URL
         FROM recipe
         ORDER BY RCMM_CNT DESC
         LIMIT 10
@@ -32,7 +33,7 @@
 
     <!-- 주간 조회수 랭킹 쿼리 -->
     <select id="getTopWeeklyViewsRank" resultMap="RankResultMap">
-        SELECT RCP_SNO, RCP_TTL, RGTR_NM, INQ_CNT, RCMM_CNT, WEEKLY_VIEWS, WEEKLY_RECOMMENDATIONS
+        SELECT RCP_SNO, RCP_TTL, RGTR_NM, INQ_CNT, RCMM_CNT, WEEKLY_VIEWS, WEEKLY_RECOMMENDATIONS, IMAGE_URL
         FROM recipe
         ORDER BY WEEKLY_VIEWS DESC
         LIMIT 10
@@ -40,7 +41,7 @@
 
     <!-- 주간 추천수 랭킹 쿼리 -->
     <select id="getTopWeeklyRecommendationsRank" resultMap="RankResultMap">
-        SELECT RCP_SNO, RCP_TTL, RGTR_NM, INQ_CNT, RCMM_CNT, WEEKLY_VIEWS, WEEKLY_RECOMMENDATIONS
+        SELECT RCP_SNO, RCP_TTL, RGTR_NM, INQ_CNT, RCMM_CNT, WEEKLY_VIEWS, WEEKLY_RECOMMENDATIONS, IMAGE_URL
         FROM recipe
         ORDER BY WEEKLY_RECOMMENDATIONS DESC
         LIMIT 10

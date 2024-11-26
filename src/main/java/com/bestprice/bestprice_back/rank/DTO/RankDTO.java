@@ -12,4 +12,5 @@ public class RankDTO {
     private int rcmmCnt;
     private int weeklyViews;
     private int weeklyRecommendations;
+    private String imageUrl;
 }
