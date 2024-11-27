@@ -50,12 +50,13 @@ public class UserService {
 
             // URL에 email 추가
             String body = "<div style='font-family: Arial, sans-serif;'>"
-                    + "<h1>안녕하세요. BestPrice 입니다</h1>"
-                    + "<br>"
-                    + "<p>아래 링크를 클릭하면 이메일 인증이 완료됩니다.</p>"
-                    + "<a href='http://localhost:8001/user/verify?token=" + token + "&email=" + email
-                    + "' style='color: blue; text-decoration: underline;'>인증 링크</a>"
-                    + "</div>";
+            + "<h1>안녕하세요. <span style='color: #ff5833;'>CookCook</span> 입니다</h1>"
+            + "<br>"
+            + "<p>아래 링크를 클릭하면 이메일 인증이 완료됩니다.</p>"
+            + "<a href='http://localhost:8001/user/verify?token=" + token + "&email=" + email
+            + "' style='color: blue; text-decoration: underline;'>인증 링크</a>"
+            + "</div>";
+
 
             helper.setText(body, true);
             mailSender.send(message);
