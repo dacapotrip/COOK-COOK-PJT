@@ -109,7 +109,11 @@
   <img src="https://img.shields.io/badge/MyBatis-%235B7F8D?style=for-the-badge&logo=mybatis&logoColor=white">
 
 <br/>
+## 📁 ERD
 
+![logo](/public/assets/readmeImg/erd.png)
+
+<br/>
 ## 🚀 서비스 아키텍처
 
 ![logo](/public/assets/readmeImg/architecture.png)
