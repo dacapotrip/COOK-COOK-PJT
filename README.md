@@ -119,3 +119,53 @@
 ## 🚀 서비스 아키텍처
 
 ![logo](/public/assets/readmeImg/architecture.png)
+
+<br />
+
+## 주요 기능
+
+<img src="./public/assets/readmeImg/001.png"/>
+<br />
+
+<img src="./public/assets/readmeImg/002.png"/>
+<br />
+
+<img src="./public/assets/readmeImg/003.png"/>
+<br />
+
+<img src="./public/assets/readmeImg/004.png"/>
+<br />
+
+<img src="./public/assets/readmeImg/005.png"/>
+<br />
+
+<img src="./public/assets/readmeImg/006.png"/>
+<br />
+
+<img src="./public/assets/readmeImg/007.png"/>
+<br />
+
+<img src="./public/assets/readmeImg/008.png"/>
+<br />
+
+<img src="./public/assets/readmeImg/009.png"/>
+<br />
+
+<img src="./public/assets/readmeImg/010.png"/>
+<br />
+
+<img src="./public/assets/readmeImg/011.png"/>
+<br />
+
+<img src="./public/assets/readmeImg/012.png"/>
+<br />
+
+<img src="./public/assets/readmeImg/013.png"/>
+<br />
+
+<img src="./public/assets/readmeImg/014.png"/>
+<br />
+
+<img src="./public/assets/readmeImg/015.png"/>
+<br />
+
