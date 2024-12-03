@@ -81,8 +81,32 @@
 
 <br />
 
-## 💻 기술 스택
+## 🛠️ 기술 스택
 
+- <img src="https://img.shields.io/badge/Framework-%23121011?style=for-the-badge">
+  <img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white">
+  <img src="https://img.shields.io/badge/3.2.10-515151?style=for-the-badge">
+  
+- <img src="https://img.shields.io/badge/Build-%23121011?style=for-the-badge">
+  <img src="https://img.shields.io/badge/Gradle-02303A?style=for-the-badge&logo=Gradle&logoColor=white">
+  <img src="https://img.shields.io/badge/7.6.1-515151?style=for-the-badge">
+  
+- <img src="https://img.shields.io/badge/Language-%23121011?style=for-the-badge">
+  <img src="https://img.shields.io/badge/java-%232EB67D?style=for-the-badge&logo=openjdk&logoColor=white"> 
+  <img src="https://img.shields.io/badge/17-515151?style=for-the-badge">
+
+- <img src="https://img.shields.io/badge/Database-%23121011?style=for-the-badge">
+  <img src="https://img.shields.io/badge/MySQL-%2300A6D6?style=for-the-badge&logo=mysql&logoColor=white">
+
+- <img src="https://img.shields.io/badge/Authentication-%23121011?style=for-the-badge">
+  <img src="https://img.shields.io/badge/JWT-%232B2B2B?style=for-the-badge&logo=jsonwebtokens&logoColor=white"> 
+  <img src="https://img.shields.io/badge/Spring_Security-%23121011?style=for-the-badge">
+
+- <img src="https://img.shields.io/badge/Other Libraries-%23121011?style=for-the-badge">
+  <img src="https://img.shields.io/badge/jsoup-%2343B02A?style=for-the-badge&logo=jsoup&logoColor=white">
+  <img src="https://img.shields.io/badge/Spring Mail-%23E34F26?style=for-the-badge&logo=spring&logoColor=white">
+  <img src="https://img.shields.io/badge/Swagger-%2300C853?style=for-the-badge&logo=swagger&logoColor=white"> 
+  <img src="https://img.shields.io/badge/MyBatis-%235B7F8D?style=for-the-badge&logo=mybatis&logoColor=white">
 
 <br/>
 
