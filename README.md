@@ -108,12 +108,14 @@
   <img src="https://img.shields.io/badge/Swagger-%2300C853?style=for-the-badge&logo=swagger&logoColor=white"> 
   <img src="https://img.shields.io/badge/MyBatis-%235B7F8D?style=for-the-badge&logo=mybatis&logoColor=white">
 
-<br/>
+<br />
+
 ## 📁 ERD
 
 ![logo](/public/assets/readmeImg/erd.png)
 
-<br/>
+<br />
+
 ## 🚀 서비스 아키텍처
 
 ![logo](/public/assets/readmeImg/architecture.png)
