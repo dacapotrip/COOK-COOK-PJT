@@ -63,8 +63,7 @@
     <td align="center" width="200px" >
       <a href="https://github.com/maybeaj/"><strong>이효진</strong></a><br>Full Stack
     </td>
-    <td align="center" width="200px" >
-      <a href="https://github.com/dacapotrip/"><strong>추상우</strong></a><br>Full Stack
+    <td align="center" wid승우</strong></a><br>Full Stack
     </td>
     <td align="center" width="200px" >
       <a href="https://github.com/Gyunie01/"><strong>정창균</strong></a><br>Frontend
